@@ -1,22 +1,12 @@
-# Mechanical Engineering Project Template
-
-A reusable starting point for projects in the Mechanical Engineering Department. Use this repository as a template to organize a project’s mechanical design, electronics, software, machine skills, simulation, documentation, experiments, and publications.
-
-## Getting started
-
-1. Select **Use this template** on GitHub to create a repository for your project.
-2. Rename the project in this README and update the project summary, team, and objectives.
-3. Review the folder READMEs and replace the examples with project-specific information.
-4. Create GitHub Issues for tasks and record important design decisions and test results.
-5. Check the license placeholder and select appropriate terms before sharing or reusing project work.
+# Mechanical Engineering Project Group ไอเอิท
 
 ## Project overview
 
-- **Project name:** [Enter project name]
+- **Project name:** Delta Haptic Device
 - **Problem / purpose:** [Describe the engineering need]
-- **Team:** [Names and responsibilities]
+- **Team:** 6730156021 Natchakrit Thongraya, 6730317821 Piyathon Banjong, 6730154821 Natthabhat Nilsuwan
 - **Status:** Planning
-- **Last updated:** [YYYY-MM-DD]
+- **Last updated:** [2026-10-20]
 
 ## Repository structure
 
@@ -34,10 +24,3 @@ A reusable starting point for projects in the Mechanical Engineering Department.
 | `experiments/` | Procedures, raw data, and results |
 | `publications/` | Project-related journal and conference papers |
 
-## Collaboration and file practices
-
-Use descriptive filenames and commit messages. Record units, revisions, software versions, and assumptions. Keep editable source files where practical. Avoid committing credentials, private data, temporary files, or duplicate exports. Consider Git LFS for large CAD, simulation, and video files.
-
-## Safety and validation
-
-Document hazards, safeguards, and operating limits before testing hardware. Validate important calculations and simulation results against measurements where practical.
