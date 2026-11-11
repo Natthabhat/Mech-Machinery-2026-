@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="460" viewBox="0 0 680 460" font-family="Helvetica, Arial, sans-serif">
+<title>Arm speed while the hand rises at constant speed</title>
+<rect width="680" height="460" fill="#ffffff"/>
+<g stroke="#D3D1C7" stroke-width="0.5"><line x1="90" y1="350" x2="590" y2="350"/><line x1="90" y1="290" x2="590" y2="290"/><line x1="90" y1="230" x2="590" y2="230"/><line x1="90" y1="170" x2="590" y2="170"/><line x1="90" y1="110" x2="590" y2="110"/></g>
+<line x1="90" y1="410" x2="590" y2="410" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="90" y1="70" x2="90" y2="410" stroke="#5F5E5A" stroke-width="1"/>
+<polyline fill="none" stroke="#D85A30" stroke-width="2.5" points="90,345.9 115,354.6 140,361.3 165,366.4 190,370.1 215,372.7 240,374.2 265,374.7 290,374.2 315,372.6 340,370.1 365,366.3 390,361.1 415,354.3 440,345.3 465,333.4 490,317.5 515,295.3 540,262.6 565,208.9 590,99.5"/>
+<circle cx="265" cy="374.7" r="5" fill="#ffffff" stroke="#1D9E75" stroke-width="2"/>
+<circle cx="346.5" cy="369.2" r="5" fill="#ffffff" stroke="#7F77DD" stroke-width="2"/>
+<g stroke="#888780" stroke-width="0.75" stroke-dasharray="3 3"><line x1="262" y1="369" x2="190" y2="176"/><line x1="344" y1="364" x2="290" y2="246"/><line x1="584" y1="104" x2="470" y2="96"/></g>
+<g font-size="13" fill="#5F5E5A">
+<text x="82" y="414" text-anchor="end">50</text><text x="82" y="354" text-anchor="end">70</text><text x="82" y="294" text-anchor="end">90</text><text x="82" y="234" text-anchor="end">110</text><text x="82" y="174" text-anchor="end">130</text><text x="82" y="114" text-anchor="end">150</text>
+<text x="90" y="430" text-anchor="middle">255</text><text x="215" y="430" text-anchor="middle">280</text><text x="340" y="430" text-anchor="middle">305</text><text x="465" y="430" text-anchor="middle">330</text><text x="590" y="430" text-anchor="middle">355</text>
+<text x="340" y="450" text-anchor="middle">hand height p_z (mm, rod-end bolt plane)</text>
+<text x="90" y="56">arm speed |q̇₁| (deg/s), hand rising at a constant 100 mm/s</text>
+<text x="110" y="160">lowest speed: q̈ = 0 at 290 mm</text>
+<text x="110" y="222">example p_z = 306 mm:</text><text x="110" y="240">q̇ = −63.6°/s, q̈ = −23°/s²</text>
+<text x="464" y="100" text-anchor="end">arm nearly straight: q̇, q̈ shoot up</text></g>
+</svg>

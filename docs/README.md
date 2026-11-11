@@ -8,3 +8,4 @@ Add assembly, setup, operation, troubleshooting, and maintenance instructions. I
 2. [The forearm-length equation](symbolic-math/02-forearm-equation.md)
 3. [Solving for q](symbolic-math/03-solving-for-q.md)
 4. [Velocity and the Jacobian](symbolic-math/04-velocity-jacobian.md)
+5. [Acceleration](symbolic-math/05-acceleration.md)

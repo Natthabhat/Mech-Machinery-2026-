@@ -85,4 +85,4 @@ A rod almost at 90° to its arm is the best case: the arm's motion goes almost e
 
 The same J also maps forces: τ = Jᵀ·F turns a force at the hand into shoulder torques (part 6, dynamics).
 
-Next: 5. Acceleration (coming next).
+Next: [5. Acceleration](05-acceleration.md)
