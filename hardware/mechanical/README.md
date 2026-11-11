@@ -28,8 +28,3 @@ Final CAD of the delta haptic device, as STEP files in [`cad/`](cad/). The Simsc
 
 All masses are weighed (`info.txt`); the model uses them directly. Rope: passes through Ø4 holes at both ends of the big drum arc and is clamped by an M3×10 + nut in the drum's
 tension slot.
-
-## Fusion 360 scripts
-
-[`fusion-scripts/ISO4762 Screws/`](fusion-scripts/ISO4762%20Screws/) is a Fusion 360 script that models ISO 4762
-socket head screws (used for M3×6). Run it from Fusion 360 → Utilities → Scripts and Add-Ins.
