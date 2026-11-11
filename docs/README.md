@@ -9,3 +9,4 @@ Add assembly, setup, operation, troubleshooting, and maintenance instructions. I
 3. [Solving for q](symbolic-math/03-solving-for-q.md)
 4. [Velocity and the Jacobian](symbolic-math/04-velocity-jacobian.md)
 5. [Acceleration](symbolic-math/05-acceleration.md)
+6. [Dynamics: from motor torque to hand force](symbolic-math/06-dynamics.md)

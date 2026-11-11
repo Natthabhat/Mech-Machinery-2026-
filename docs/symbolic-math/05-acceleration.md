@@ -75,4 +75,4 @@ dynamics (part 6) need it: moving the hand's mass takes force even when the moto
 - [`delta_symbolic.m`](../../simulation/delta_symbolic.m): `c = jacobian(Phi_p*dp + Phi_q*dq, [p; q]) * [dp; dq]`,
   generated as `delta_sym_c.m`; agrees with finite differences to about 1e-7.
 
-Next: 6. Dynamics (coming next).
+Next: [6. Dynamics](06-dynamics.md)
