@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="540" viewBox="0 0 680 540" font-family="Helvetica, Arial, sans-serif">
+<title>Steps of delta_symbolic_anim.m</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="680" height="540" fill="#ffffff"/>
+<g stroke-width="0.5">
+<rect x="40" y="30" width="290" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7"/>
+<rect x="40" y="110" width="290" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7"/>
+<rect x="40" y="190" width="290" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A"/>
+<rect x="40" y="270" width="290" height="56" rx="8" fill="#EEEDFE" stroke="#534AB7"/>
+<rect x="40" y="350" width="290" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56"/>
+<rect x="40" y="430" width="290" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A"/></g>
+<g font-size="14" font-weight="bold">
+<text x="56" y="55" fill="#3C3489">1  Symbols and points</text><text x="56" y="135" fill="#3C3489">2  Equation and solve</text>
+<text x="56" y="215" fill="#444441">3  Hand path p(t)</text><text x="56" y="295" fill="#3C3489">4  Substitute and differentiate</text>
+<text x="56" y="375" fill="#085041">5  Check</text><text x="56" y="455" fill="#444441">6  Plot and animate</text></g>
+<g font-size="12">
+<text x="56" y="74" fill="#534AB7">part 1: Aᵢ, Bᵢ(qᵢ), Cᵢ(p)</text><text x="56" y="154" fill="#534AB7">parts 2–3: q = 2·atan(u)</text>
+<text x="56" y="234" fill="#5F5E5A">circle + height bobbing, 10 s</text><text x="56" y="314" fill="#534AB7">parts 4–5: q(t), q̇(t), q̈(t)</text>
+<text x="56" y="394" fill="#0F6E56">numeric solvers, rope, rod tilt</text><text x="56" y="474" fill="#5F5E5A">q plots, fanimator, playAnimation</text></g>
+<g stroke="#5F5E5A" stroke-width="1.5"><line x1="185" y1="88" x2="185" y2="106" marker-end="url(#arrow)"/><line x1="185" y1="168" x2="185" y2="186" marker-end="url(#arrow)"/><line x1="185" y1="248" x2="185" y2="266" marker-end="url(#arrow)"/><line x1="185" y1="328" x2="185" y2="346" marker-end="url(#arrow)"/><line x1="185" y1="408" x2="185" y2="426" marker-end="url(#arrow)"/></g>
+<g font-size="12" fill="#444441" font-family="Consolas, Menlo, monospace">
+<text x="350" y="54">t, q, x y z = sym(...)</text><text x="350" y="72">B{i} = Rz*[R+La*cos(q) ...]</text>
+<text x="350" y="134">eq(i): |C-B|^2 == Lb^2</text><text x="350" y="152">solve(... == 0, u); keep k</text>
+<text x="350" y="214">Rc = 0.9*maxRadius(...)</text><text x="350" y="232">pt = [x0+Rc*cos(..); ..]</text>
+<text x="350" y="294">q_t = subs(qIK, p, pt)</text><text x="350" y="312">diff(q_t,t), diff(q_t,t,2)</text>
+<text x="350" y="374">assert(... &lt; 1e-9)</text><text x="350" y="392">rodEndTilt &lt; P.tiltMax</text>
+<text x="350" y="454">matlabFunction, precompute</text><text x="350" y="472">fanimator(...); playAnimation</text></g>
+<text x="40" y="516" font-size="12" fill="#5F5E5A">purple = symbolic math    teal = checks    gray = setup / drawing</text>
+</svg>

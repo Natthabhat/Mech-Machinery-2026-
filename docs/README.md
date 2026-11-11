@@ -10,3 +10,4 @@ Add assembly, setup, operation, troubleshooting, and maintenance instructions. I
 4. [Velocity and the Jacobian](symbolic-math/04-velocity-jacobian.md)
 5. [Acceleration](symbolic-math/05-acceleration.md)
 6. [Dynamics: from motor torque to hand force](symbolic-math/06-dynamics.md)
+7. [Putting it together: the animation script](symbolic-math/07-animation-script.md)

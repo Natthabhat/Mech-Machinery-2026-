@@ -106,4 +106,4 @@ What this means for haptics:
 - **Detent torque**: a stepper's detent torque (≈ 20 mN·m) is bigger than the whole gravity-compensation torque,
   which is why steppers feel "notchy" in a haptic device.
 
-Next: 7. Putting it together in the animation script (coming next).
+Next: [7. Putting it together in the animation script](07-animation-script.md)
