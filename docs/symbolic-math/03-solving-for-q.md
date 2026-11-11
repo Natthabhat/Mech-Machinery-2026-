@@ -82,4 +82,4 @@ $$q = \gamma \pm \arccos\!\left(\frac{-c}{\rho}\right)$$
 It gives the same two angles and is cheaper numerically, so [`deltaIK.m`](../../simulation/deltaIK.m) uses it. The
 half-angle form suits `solve()` because it is a polynomial.
 
-Next: 4. Velocity and the Jacobian (coming next).
+Next: [4. Velocity and the Jacobian](04-velocity-jacobian.md)
