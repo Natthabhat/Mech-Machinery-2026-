@@ -66,8 +66,10 @@ P.m = struct('bigDrum',0.0313, 'connector',0.0091, 'smallDrum',0.0042, 'bracket'
 P.m.rodHousing = P.m.rodEnd - 694.8e-9*P.rhoSteel;   % weighed rod end minus its steel ball (694.8 mm^3, modelled separately)
 P.q0   = -40;            % deg, assembly guess (arms up)
 P.dir  = fileparts(mfilename('fullpath'));                        % this folder: models (.slx) are saved here
-P.cad  = fullfile(P.dir, '..', 'hardware', 'mechanical', 'cad');  % STEP files in the GitHub repo layout
-if ~isfolder(P.cad), P.cad = P.dir; end                          % or all files in one folder
+% STEP files: first folder that has them -> Model/ subfolder, GitHub repo layout, or this folder
+cadDirs = {fullfile(P.dir, 'Model'), fullfile(P.dir, '..', 'hardware', 'mechanical', 'cad'), P.dir};
+P.cad  = cadDirs{find(cellfun(@(d) isfile(fullfile(d, 'Base V4.step')), cadDirs), 1)};
+clear cadDirs
 assignin('base','P',P);
 
 mdl = 'delta_haptic';
@@ -77,13 +79,25 @@ new_system(mdl); load_system('sm_lib'); load_system('nesl_utility');
 assignin(get_param(mdl,'ModelWorkspace'),'P',P);   % saved inside the .slx, so it opens/simulates without this script
 set_param(mdl,'StopTime','2','SolverType','Variable-step','Solver','ode23t','RelTol','1e-4');
 
+% Part colours as built (photos 2026-11-11): yellow big drums, white brackets, blue small drums and hand,
+% grey elbow connectors, mint forearm tubes, wooden base boards, silver steel parts, red/white rope
+col.base      = [0.78 0.62 0.44];   % laser-cut wood
+col.bracket   = [0.95 0.95 0.93];   % white PETG
+col.motor     = [0.35 0.35 0.38];   % NEMA17 steel / black
+col.smallDrum = [0.10 0.30 0.85];   % blue PETG
+col.bigDrum   = [1.00 0.80 0.10];   % yellow PETG
+col.connector = [0.62 0.63 0.66];   % grey PETG
+col.tube      = [0.45 0.85 0.72];   % mint PETG
+col.hand      = [0.10 0.35 0.90];   % blue PETG
+col.steel     = [0.75 0.75 0.78];   % bolts, nuts, bearings, rod ends
+col.rope      = [0.85 0.15 0.15];   % red/white twine (also set in ropeSeg / ropeRing below)
 %% ---- Environment ----
 W   = blk('sm_lib/Frames and Transforms/World Frame','World',[20 200]);
 MC  = blk('sm_lib/Utilities/Mechanism Configuration','MechConfig',[20 300],'GravityVector','[0 0 -9.81]');
 SC  = blk('nesl_utility/Solver Configuration','Solver',[20 400]);
 con(W,'R1',MC,'R1'); con(W,'R1',SC,'R1');
 BASE = blk('sm_lib/Body Elements/File Solid','Base',[120 200],'ExtGeomFileName',fullfile(P.cad,P.baseFile), ...
-    'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density','Density','P.rho','GraphicDiffuseColor','[0.4 0.85 0.75]');
+    'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density','Density','P.rho','GraphicDiffuseColor',mat2str(col.base));
 con(W,'R1',BASE,'R1');
 
 % Motor torque command [3x1] N*m at the motor shafts (default zero = free motion under gravity)
@@ -96,7 +110,7 @@ EFF = blk('sm_lib/Frames and Transforms/Rigid Transform','HandOffset',[1300 700]
     'TranslationMethod','Cartesian','TranslationCartesianOffset','[0 0 0.002]');
 HND = blk('sm_lib/Body Elements/File Solid','HandPart',[1400 700],'ExtGeomFileName',fullfile(P.cad,'hand V.3.step'), ...
     'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-    'Density','P.rho','GraphicDiffuseColor','[0.4 0.85 0.75]');
+    'Density','P.rho','GraphicDiffuseColor',mat2str(col.hand));
 con(EFF,'R1',HND,'R1');
 TS  = blk('sm_lib/Frames and Transforms/Transform Sensor','EffectorPos',[1300 850],'SenseXYZ','on');
 PSx = blk('nesl_utility/PS-Simulink Converter','xyz_PS',[1450 850]);
@@ -118,10 +132,10 @@ for i = 1:3
     Tbr = blk('sm_lib/Frames and Transforms/Rigid Transform',['BracketFrame' s],[350 y-40],'RotationMethod','None', ...
         'TranslationMethod','Cartesian','TranslationCartesianOffset','[0 0.090 -P.zArm]');
     BR  = blk('sm_lib/Body Elements/File Solid',['Bracket' s],[470 y-40],'ExtGeomFileName',fullfile(P.cad,'Motor Bracket v6.STEP'), ...
-        'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density','Density','P.rho','GraphicDiffuseColor','[0.4 0.85 0.75]');
+        'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density','Density','P.rho','GraphicDiffuseColor',mat2str(col.bracket));
     MO  = blk('sm_lib/Body Elements/File Solid',['Motor' s],[470 y-80],'ExtGeomFileName',fullfile(P.cad,'Nema17 42BYGH40.step'), ...
         'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-        'Density','P.rho','GraphicDiffuseColor','[0.15 0.15 0.15]');   % exported from Fusion 'Nema17'; static, mass irrelevant
+        'Density','P.rho','GraphicDiffuseColor',mat2str(col.motor));   % exported from Fusion 'Nema17'; static, mass irrelevant
     % motor file: shaft axis at (20,20) mm, mounting face at z=40 mm -> put face on bracket plate (z=0), shaft along +z
     Tmo = blk('sm_lib/Frames and Transforms/Rigid Transform',['MotorFrame' s],[350 y-80],'RotationMethod','None', ...
         'TranslationMethod','Cartesian','TranslationCartesianOffset','[-0.020 -0.020 -0.040]');
@@ -170,11 +184,11 @@ for i = 1:3
         'TranslationMethod','Cartesian','TranslationCartesianOffset','[0 0 P.zSmall]');
     SD  = blk('sm_lib/Body Elements/File Solid',['SmallDrum' s],[720 y-120],'ExtGeomFileName',fullfile(P.cad,'Small Drum v5.STEP'), ...
         'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-        'Density','P.rho','GraphicDiffuseColor','[0.1 0.2 0.8]');
+        'Density','P.rho','GraphicDiffuseColor',mat2str(col.smallDrum));
     % rope wraps on the small drum (visual + negligible mass): tube r 9..10.5 mm over 10 mm of the groove
     RS  = blk('sm_lib/Body Elements/Revolved Solid',['RopeSmall' s],[840 y-120],'RevolutionCrossSection', ...
         '[9 13; 10.5 13; 10.5 23; 9 23]','RevolutionCrossSectionUnits','mm','RevolutionExtent','Full', ...
-        'InertiaType','PointMass','Mass','1e-4','GraphicDiffuseColor','[0.9 0.2 0.2]');
+        'InertiaType','PointMass','Mass','1e-4','GraphicDiffuseColor',mat2str(col.rope));
     con(JM,'R1',Jr,'R1'); con(JM,'R1',Tsd,'L1'); con(Tsd,'R1',SD,'R1'); con(Tsd,'R1',RS,'R1');
     % rope = no-slip capstan: kinematically an external gear pair, ratio N, real 90 mm centre distance
     GC  = blk('sm_lib/Gears and Couplings/Gears/Common Gear Constraint',['Rope' s],[600 y-80],'GearType','External', ...
@@ -188,10 +202,10 @@ for i = 1:3
         'TranslationMethod','None');
     FC = blk('sm_lib/Body Elements/File Solid',['Arm' s],[720 y],'ExtGeomFileName',fullfile(P.cad,'connector v6.STEP'), ...
         'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-        'Density','P.rho','GraphicDiffuseColor','[0.1 0.2 0.8]');
+        'Density','P.rho','GraphicDiffuseColor',mat2str(col.connector));
     FD = blk('sm_lib/Body Elements/File Solid',['BigDrum' s],[720 y-40],'ExtGeomFileName',fullfile(P.cad,'Big Drum V6.STEP'), ...
         'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-        'Density','P.rho','GraphicDiffuseColor','[0.1 0.2 0.8]');
+        'Density','P.rho','GraphicDiffuseColor',mat2str(col.bigDrum));
     con(J,'R1',Rc,'L1'); con(Rc,'R1',FC,'R1'); con(Rc,'R1',FD,'R1');
     % rope lying on the big-drum arc between the tie holes (drum part frame: arc centre on -X, groove centre z=3.1 mm)
     Tra = blk('sm_lib/Frames and Transforms/Rigid Transform',['RopeArcFrame' s],[720 y+40],'RotationMethod','StandardAxis', ...
@@ -201,10 +215,10 @@ for i = 1:3
     RA  = blk('sm_lib/Body Elements/Revolved Solid',['RopeArc' s],[840 y+40],'RevolutionCrossSection', ...
         ['[76.75+0.75*cos(' th ') 0.75*sin(' th ')]'],'RevolutionCrossSectionUnits','mm','RevolutionExtent','Custom', ...
         'RevolutionAngle','2*asind(50/76)','RevolutionAngleUnits','deg', ...
-        'InertiaType','PointMass','Mass','1e-4','GraphicDiffuseColor','[0.9 0.2 0.2]');
+        'InertiaType','PointMass','Mass','1e-4','GraphicDiffuseColor',mat2str(col.rope));
     con(Rc,'R1',Tra,'L1'); con(Tra,'R1',RA,'R1');
     % hub: two 606ZZ, one in each Ø16.9 pocket (drum file z -5.9..0.1 and 6.1..12.1), flush with the hub faces
-    silver = [0.75 0.75 0.78];
+    silver = col.steel;
     armHW{i} = [mount(Rc, ['BearingIn' s],  '606ZZ.step', [0 0 -2.9], eye(3), silver), ...
                 mount(Rc, ['BearingOut' s], '606ZZ.step', [0 0  9.1], eye(3), silver)];
     % drum stub (20,0): M3x6 head in the Ø6x1 counterbore (seat z=-1.4), through Ø3 into the connector boss
@@ -251,25 +265,25 @@ for i = 1:3
         SB = blk('sm_lib/Joints/Spherical Joint',['RodEndB' t],[1400 y+20*side]);
         con(Tel,'R1',eyeA,'L1'); con(eyeA,'R1',SA,'L1'); con(Ep,'R1',eyeB,'L1'); con(eyeB,'R1',SB,'L1');
         % rod-end balls are clamped by the M6 screws: fixed to the arm / hand, ball axis (file Z) along the bolt (X)
-        Rball = [0 0 1; 0 1 0; -1 0 0]; silver = [0.75 0.75 0.78];
+        Rball = [0 0 1; 0 1 0; -1 0 0]; silver = col.steel;
         mount(eyeA, ['RodBallA' t], 'M6 rod end ball.step', [0 0 0], Rball, silver);
         mount(eyeB, ['RodBallB' t], 'M6 rod end ball.step', [0 0 0], Rball, silver);
         % rod-end file: eye axis Z, stud +Y (51 mm). Elbow end stud -> -Z_rod; hand end stud -> +Z_rod
         RA = blk('sm_lib/Body Elements/File Solid',['RodEndPartA' t],[1100 y+20*side],'ExtGeomFileName',fullfile(P.cad,'M6 rod end housing L51.step'), ...
             'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-            'Density','P.rhoSteel','GraphicDiffuseColor','[0.75 0.75 0.78]');
+            'Density','P.rhoSteel','GraphicDiffuseColor',mat2str(col.steel));
         Tb = blk('sm_lib/Frames and Transforms/Rigid Transform',['RodFar' t],[1200 y+20*side],'RotationMethod','RotationMatrix', ...
             'RotationMatrix','[0 0 1; 1 0 0; 0 1 0]','TranslationMethod','Cartesian','TranslationCartesianOffset','[0 0 -P.Lb]');
         RB = blk('sm_lib/Body Elements/File Solid',['RodEndPartB' t],[1300 y+20*side],'ExtGeomFileName',fullfile(P.cad,'M6 rod end housing L51.step'), ...
             'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-            'Density','P.rhoSteel','GraphicDiffuseColor','[0.75 0.75 0.78]');
+            'Density','P.rhoSteel','GraphicDiffuseColor',mat2str(col.steel));
         Tr = blk('sm_lib/Frames and Transforms/Rigid Transform',['RodNear' t],[1050 y+20*side],'RotationMethod','RotationMatrix', ...
             'RotationMatrix','[0 0 1; -1 0 0; 0 -1 0]','TranslationMethod','None');
         Ttu = blk('sm_lib/Frames and Transforms/Rigid Transform',['TubeFrame' t],[1150 y+20*side],'RotationMethod','None', ...
             'TranslationMethod','Cartesian','TranslationCartesianOffset','[0 P.tubeStart 0]');   % along the stud axis (+Y of file frame)
         TU = blk('sm_lib/Body Elements/File Solid',['Tube' t],[1250 y+20*side],'ExtGeomFileName',fullfile(P.cad,'Link V.2.step'), ...
             'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-            'Density','P.rho','GraphicDiffuseColor','[0.4 0.85 0.75]');
+            'Density','P.rho','GraphicDiffuseColor',mat2str(col.tube));
         con(SA,'R1',Tr,'L1'); con(Tr,'R1',RA,'R1'); con(Tr,'R1',Ttu,'L1'); con(Ttu,'R1',TU,'R1');
         % hand-end rod end: rod frame -> far eye (Z offset is in the rod frame, so branch from the spherical follower)
         con(SA,'R1',Tb,'L1'); con(Tb,'R1',RB,'R1');
@@ -283,7 +297,7 @@ for i = 1:3
                 'RotationMatrix',rot,'TranslationMethod','Cartesian','TranslationCartesianOffset',['[' sg '*0.0045 0 0]']);
             SC = blk('sm_lib/Body Elements/File Solid',[e{1}{2} t],[1100 y+20*side+40],'ExtGeomFileName',fullfile(P.cad,'M6x12 ISO4762.step'), ...
                 'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-                'Density','P.rhoSteel','GraphicDiffuseColor','[0.15 0.15 0.15]');
+                'Density','P.rhoSteel','GraphicDiffuseColor',mat2str(col.steel));
             con(e{1}{1},'R1',Ts,'L1'); con(Ts,'R1',SC,'R1');
         end
     end
@@ -334,7 +348,7 @@ function names = ropeSeg(parent, name, A, B, rr)
     T = blk('sm_lib/Frames and Transforms/Rigid Transform', [name 'Frame'], [0 0], 'RotationMethod', 'RotationMatrix', ...
         'RotationMatrix', mat2str(R), 'TranslationMethod', 'Cartesian', 'TranslationCartesianOffset', mat2str((A + B)/2000));
     S = blk('sm_lib/Body Elements/Cylindrical Solid', name, [0 0], 'CylinderRadius', num2str(rr/1000), 'CylinderLength', ...
-        num2str(L/1000), 'InertiaType', 'PointMass', 'Mass', '1e-5', 'GraphicDiffuseColor', '[0.9 0.2 0.2]');
+        num2str(L/1000), 'InertiaType', 'PointMass', 'Mass', '1e-5', 'GraphicDiffuseColor', '[0.85 0.15 0.15]');
     con(parent, 'R1', T, 'L1'); con(T, 'R1', S, 'R1');
     names = {[name 'Frame'], name};
 end
@@ -345,13 +359,13 @@ function names = ropeRing(parent, name, C, axis, R0, rr)
         'RotationMatrix', mat2str(axesZ(axis)), 'TranslationMethod', 'Cartesian', 'TranslationCartesianOffset', mat2str(C/1000));
     S = blk('sm_lib/Body Elements/Revolved Solid', name, [0 0], 'RevolutionCrossSection', ...
         mat2str([R0 + rr*cos(th), rr*sin(th)], 4), 'RevolutionCrossSectionUnits', 'mm', 'RevolutionExtent', 'Full', ...
-        'InertiaType', 'PointMass', 'Mass', '1e-5', 'GraphicDiffuseColor', '[0.9 0.2 0.2]');
+        'InertiaType', 'PointMass', 'Mass', '1e-5', 'GraphicDiffuseColor', '[0.85 0.15 0.15]');
     con(parent, 'R1', T, 'L1'); con(T, 'R1', S, 'R1');
     names = {[name 'Frame'], name};
 end
 function names = mount(parent, name, file, pos_mm, R, color)
     % rigidly attach a steel CAD part (bearing/screw) to a frame: part origin at pos_mm, part axes = columns of R
-    if nargin < 6, color = [0.2 0.2 0.22]; end
+    if nargin < 6, color = [0.75 0.75 0.78]; end   % zinc-plated steel (bolts in the photos)
     P = evalin('base', 'P');
     T = blk('sm_lib/Frames and Transforms/Rigid Transform', [name 'Frame'], [0 0], 'RotationMethod', 'RotationMatrix', ...
         'RotationMatrix', mat2str(R), 'TranslationMethod', 'Cartesian', 'TranslationCartesianOffset', mat2str(pos_mm/1000));

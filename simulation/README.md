@@ -3,8 +3,14 @@
 Multibody model, symbolic kinematics/dynamics and demos of the 3-DOF capstan-drive delta haptic device.
 
 **Software:** MATLAB R2026a with Simulink, Simscape, Simscape Multibody and Symbolic Math Toolbox.
-**CAD input:** STEP files in [`../hardware/mechanical/cad/`](../hardware/mechanical/cad/) (found automatically;
-the scripts also work with all files in one folder).
+**CAD input:** STEP files in [`../hardware/mechanical/cad/`](../hardware/mechanical/cad/). `build_delta_haptic`
+finds them automatically: it uses the first of `Model/` (next to the scripts), `../hardware/mechanical/cad/`, or the
+script folder itself that contains `Base V4.step`. The `.slx` models store full STEP paths, so after moving the CAD
+files run `build_delta_haptic` (and the demo you want) again.
+
+**Colours** match the built prototype (photos 2026-11-11) and are set in one table, `col.*`, near the top of
+`build_delta_haptic.m`: yellow big drums, white brackets, blue small drums and hand, grey elbow connectors, mint
+forearm tubes, wooden base, silver steel parts, red rope.
 
 ## Quick start
 
