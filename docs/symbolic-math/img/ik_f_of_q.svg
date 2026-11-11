@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="470" viewBox="0 0 680 470" font-family="Helvetica, Arial, sans-serif">
+<title>f(q) = a cos q + b sin q + c for leg 1</title>
+<rect width="680" height="470" fill="#ffffff"/>
+<rect x="217" y="60" width="119" height="340" fill="#1D9E75" opacity="0.12"/>
+<line x1="80" y1="300" x2="600" y2="300" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="80" y1="60" x2="80" y2="400" stroke="#5F5E5A" stroke-width="0.5"/>
+<g stroke="#5F5E5A" stroke-width="1"><line x1="210" y1="300" x2="210" y2="306"/><line x1="340" y1="300" x2="340" y2="306"/><line x1="470" y1="300" x2="470" y2="306"/><line x1="600" y1="300" x2="600" y2="306"/></g>
+<polyline fill="none" stroke="#7F77DD" stroke-width="2" points="80,270.4 101.7,309.8 123.3,343.8 145,370 166.7,386.6 188.3,392.6 210,387.5 231.7,371.6 253.3,346.1 275,312.6 296.7,273.5 318.3,231.4 340,189.3 361.7,149.8 383.3,115.9 405,89.7 426.7,73 448.3,67.1 470,72.2 491.7,88.1 513.3,113.6 535,147.1 556.7,186.2 578.3,228.2 600,270.4"/>
+<circle cx="282" cy="300" r="6" fill="#ffffff" stroke="#D85A30" stroke-width="2"/>
+<circle cx="96" cy="300" r="5" fill="#ffffff" stroke="#888780" stroke-width="2"/>
+<g font-size="13" fill="#5F5E5A">
+<text x="222" y="76">working range −85° … −2.8°</text>
+<text x="80" y="420" text-anchor="middle">−180°</text><text x="210" y="420" text-anchor="middle">−90°</text><text x="340" y="420" text-anchor="middle">0°</text><text x="470" y="420" text-anchor="middle">90°</text><text x="600" y="420" text-anchor="middle">180°</text>
+<text x="340" y="442" text-anchor="middle">shoulder angle q</text><text x="72" y="304" text-anchor="end">0</text>
+<text x="292" y="348">elbow out (used)</text><text x="104" y="288">elbow in</text>
+<text x="88" y="44">f(q) = a·cos q + b·sin q + c   (a = 6 763, b = 26 273, c = 11 695 mm²)</text>
+<text x="420" y="360">curve never reaches 0 → out of reach</text>
+<text x="420" y="378">curve just touches 0 → arm and rods in line</text></g>
+<g font-size="14" font-weight="bold" fill="#2C2C2A"><text x="292" y="330">q = −40°</text><text x="104" y="270">q = −169°</text></g>
+</svg>

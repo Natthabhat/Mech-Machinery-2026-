@@ -73,4 +73,4 @@ cos α = 11 695 / (2·72.1·188.1) = 0.431, so α = 64.5°.
   the leg plane shrinks to radius √(Lb² − d_y²). The rods then lean sideways, which is what the rod-end tilt check
   limits.
 
-Next: 3. Solving for q (coming next), with the half-angle substitution u = tan(q/2).
+Next: [3. Solving for q](03-solving-for-q.md) with the half-angle substitution u = tan(q/2).
