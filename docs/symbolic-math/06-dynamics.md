@@ -26,11 +26,11 @@ That is half of each arm's total inertia: the small rotor dominates because of t
 
 One rigid body turning about its shoulder:
 
-$$M_q = I_a + N^2 J_m + m_r L_a^2 = 0.226 + 0.399 + 0.187 = 0.812\ \text{g·m}^2$$
+$$M_q = I_a + N^2 J_m + m_r L_a^2 = 0.238 + 0.399 + 0.187 = 0.824\ \text{g·m}^2$$
 
 | Part | Value | What it is |
 |---|---|---|
-| I_a | 0.226 g·m² | big drum, connector, bearings, screws (measured from the Simscape model) |
+| I_a | 0.238 g·m² | big drum, connector, bearings, screws (measured from the Simscape model) |
 | N²J_m | 0.399 g·m² | motor rotor + small drum, as felt through the capstan |
 | m_r·La² | 0.187 g·m² | the elbow halves of the two rods at radius La (m_r = 35.9 g = one rod) |
 
@@ -41,13 +41,16 @@ V  = sum(ma*g*(H - cxa*sin(q) - cya*cos(q)) + mr*g*(H - La*sin(q)));   % arms + 
 Gq = jacobian(V, q).';                                                  % gravity torque per arm
 ```
 
-At q = −40°, G = −33.4 mN·m per arm (arm 74.9 g plus the elbow rod halves).
+At q = −40°, G = −34.6 mN·m per arm (arm 79.1 g plus the elbow rod halves).
 
 ## Step 3: the hand
 
 The hand carries its own mass plus the other half of all six rods:
 
-$$m_p = m_h + 3m_r = 91.8 + 107.7 = 199.5\ \text{g}$$
+$$m_p = m_h + 3m_r = 83.4 + 107.7 = 191.1\ \text{g}$$
+
+m_h = 83.4 g is the hand group: hand V.3 (12.9 g) + six M6×12 screws (6 × 6.3 g) + six rod-end balls (6 × 5.5 g).
+m_r = 35.9 g is one rod: tube (6.8 g) + two rod-end housings (20 g each minus the 5.5 g ball).
 
 Newton for the hand: m_p·(p̈ + g·e_z) = F + (rod forces), with F the force of the user's hand.
 
@@ -91,9 +94,9 @@ p = (0, 0, 306) mm):
 
 | Case | Motor torque, legs 1 / 2 / 3 |
 |---|---|
-| just float (gravity compensation) | 10.9 / 10.9 / 10.8 mN·m (4.0 from the arm's weight, 6.9 from hand + rods) |
-| also push the user 1 N down | 7.4 / 7.3 / 7.3 mN·m (the user's upward push helps hold it) |
-| also push the user 1 N sideways (+x) | 20.5 / 6.2 / 6.0 mN·m (leg 1 does most of the work) |
+| just float (gravity compensation) | 10.8 / 10.7 / 10.6 mN·m (4.1 from the arm's weight, 6.7 from hand + rods) |
+| also push the user 1 N down | 7.2 / 7.2 / 7.1 mN·m (the user's upward push helps hold it) |
+| also push the user 1 N sideways (+x) | 20.3 / 6.0 / 5.9 mN·m (leg 1 does most of the work) |
 
 Simscape confirms the gravity compensation: with these torques the model stays still (0.00 % of free-fall
 acceleration).

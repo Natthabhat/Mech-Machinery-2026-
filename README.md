@@ -37,8 +37,8 @@ Details, results and assumptions: [`simulation/README.md`](simulation/README.md)
 | Arm travel | −85.0° to −2.8° (arm up), limited by the rope wrap on the big drum |
 | Workspace (simulated) | handle height 278.8–384.2 mm; usable circle radius ≈ 30–36 mm (limited by the rod-end tilt) |
 | Materials | Printed parts PETG (1.27 g/cm³), steel fasteners, bearings and rod ends |
-| Gravity load | ≈ 11 mN·m per motor holds the device still (simulated, at 40° arm-up) |
-| Key masses (weighed) | base 250 g, bracket 32.2 g, big drum 31.3 g, connector 9.1 g, small drum 4.2 g, rod end 20 g, forearm tube 6.8 g, motor 330 g |
+| Gravity load | ≈ 10.7 mN·m per motor holds the device still (simulated, at 40° arm-up) |
+| Key masses (weighed) | base 250 g, bracket 32.2 g, big drum 31.3 g, connector 9.1 g, small drum 4.2 g, hand 12.9 g, rod end 20 g, forearm tube 6.8 g, motor 330 g, 606ZZ 5.7 g, M6×12 6.3 g, M3×6 0.66 g, M3×10 + nut 1.51 g |
 
 ## Assumptions
 
@@ -52,8 +52,9 @@ The simulation and calculations assume:
    The rope end-stops are modelled as stiff springs (2000 N·m/rad, 2 N·m·s/rad).
 5. **Rod-end tilt limit is 13°** (typical M6 rod end, not from the datasheet). Paths are checked against it; the
    joints in the model do not stop by themselves.
-6. **Masses:** printed parts scaled to the weighed values, steel parts 7850 kg/m³; the hand and rods are taken from
-   CAD (not weighed); motor rotor inertia 54 g·cm² (typical NEMA17).
+6. **Masses:** every part uses its weighed mass (`info.txt`), spread uniformly over its CAD shape; only the steel
+   rod-end balls use steel density (7850 kg/m³). The M3×10 + nut pair was weighed together and split by the nut's
+   ISO size. Motor rotor inertia 54 g·cm² (typical NEMA17).
 7. **Friction:** only a viscous shoulder damping of 2 mN·m·s/rad (estimate). Bearing and rope friction, stepper
    detent torque and backlash are not modelled.
 8. **Motors** are ideal torque sources with no current, voltage or speed limits. (The current TB6600 stepper drivers
@@ -70,7 +71,6 @@ The simulation and calculations assume:
   circle, the rod ends allow ≈ 37 mm. The design is final, so the limit is kept in software.
 - Stepper detent torque (≈ 2–6 N felt at the handle, estimated) and the TB6600 step/direction drivers make the
   device a position robot today; haptic force feedback needs torque-controlled drives and encoders.
-- NEMA17 mounting holes are normally M3; the design uses M2.5×6 screws (bracket holes Ø2.6), check on the prototype.
 
 ## Repository structure
 

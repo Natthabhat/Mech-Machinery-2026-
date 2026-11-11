@@ -18,7 +18,7 @@
 <g stroke="#1D9E75" stroke-width="1.5"><line x1="146" y1="76" x2="162" y2="76" marker-end="url(#ag)"/><line x1="270" y1="76" x2="286" y2="76" marker-end="url(#ag)"/><line x1="394" y1="76" x2="410" y2="76" marker-end="url(#ag)"/><line x1="518" y1="76" x2="534" y2="76" marker-end="url(#ag)"/></g>
 <g stroke="#D85A30" stroke-width="1.5"><line x1="162" y1="108" x2="146" y2="108" marker-end="url(#ar)"/><line x1="286" y1="108" x2="270" y2="108" marker-end="url(#ar)"/><line x1="410" y1="108" x2="394" y2="108" marker-end="url(#ar)"/><line x1="534" y1="108" x2="518" y2="108" marker-end="url(#ar)"/></g>
 <g font-size="13" fill="#5F5E5A">
-<text x="92" y="150" text-anchor="middle">5.6 g·cm²</text><text x="216" y="150" text-anchor="middle">N = 8.44</text><text x="340" y="150" text-anchor="middle">0.23 g·m²</text><text x="464" y="150" text-anchor="middle">≈ 30 mm/rad</text><text x="588" y="150" text-anchor="middle">199.5 g</text>
+<text x="92" y="150" text-anchor="middle">5.6 g·cm²</text><text x="216" y="150" text-anchor="middle">N = 8.44</text><text x="340" y="150" text-anchor="middle">0.24 g·m²</text><text x="464" y="150" text-anchor="middle">≈ 30 mm/rad</text><text x="588" y="150" text-anchor="middle">191.1 g</text>
 <text x="94" y="194">motion: arm turns 1/N of the motor, hand moves J·q̇</text>
 <text x="94" y="220">force: hand force F gives shoulder torque Jᵀ·F, motor feels it ÷N</text></g>
 <line x1="60" y1="190" x2="84" y2="190" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#ag)"/>

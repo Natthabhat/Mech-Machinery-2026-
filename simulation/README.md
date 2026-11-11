@@ -80,7 +80,7 @@ stored in the repo; build them with the commands above.
 | Forward kinematics vs Simscape | 5e-13 mm |
 | IK round trip | 1e-15 rad |
 | Jacobian, velocity, acceleration vs finite differences | ~1e-7 (relative) |
-| Gravity compensation in Simscape | 0.00 % residual acceleration, ~10.9 mN·m per motor at q = −40° |
+| Gravity compensation in Simscape | 0.00 % residual acceleration, ~10.7 mN·m per motor at q = −40° |
 | Free-fall start acceleration, symbolic vs Simscape | within 0.9 % |
 | Base screw holes vs bracket | within 0.005 mm (front), 0.013 mm (rear slot) |
 | Circle demo (13° rod-end limit) | radius 28.3 mm, tracking 0.07 mm, tilt ≤ 10° |
@@ -91,7 +91,8 @@ stored in the repo; build them with the commands above.
 - Geometry exactly as in the final CAD; all parts rigid; joints have no play. **La is not yet measured.**
 - Each pair of forearm rods stays parallel, so the hand stays level.
 - Rope: no slip, no stretch; end-stops modelled as stiff springs (2000 N·m/rad, 2 N·m·s/rad).
-- Masses: printed parts from weighings; hand and rods from CAD (not weighed); motor rotor 54 g·cm² (typical NEMA17).
+- Masses: all parts weighed (`info.txt`), including hand, bearings, screws and nuts; rod-end balls at steel
+  density; motor rotor 54 g·cm² (typical NEMA17).
 - Symbolic dynamics: arm = one rigid body about its pivot plus N² × rotor inertia; each rod's mass split half to
   the elbow, half to the hand (exact for gravity, approximate for inertia).
 - Not modelled: bearing and rope friction, stepper detent torque, backlash, collisions, motor current/speed limits,

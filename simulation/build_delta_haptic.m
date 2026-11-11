@@ -60,9 +60,12 @@ P.rho  = 1270;           % kg/m^3, PETG 1.27 g/cm^3, all printed parts; treats t
 P.w    = 0.047;          % parallelogram width: rod-end eye spacing = 38 mm crossbar/boss + 2 x 4.5 mm half ball width (both ends)
 P.tubeStart = 0.035;     % Link V.2 tube starts 35 mm from each eye centre: (Lb - 100 mm tube)/2; 16 mm of M6 thread inside
 P.rhoSteel  = 7850;      % kg/m^3, screws and bearing (not weighed)
-% weighed masses (info.txt), kg; mass spread uniformly over each part's CAD shape. Hand uses P.rho (not weighed).
+% weighed masses (info.txt), kg; mass spread uniformly over each part's CAD shape
 P.m = struct('bigDrum',0.0313, 'connector',0.0091, 'smallDrum',0.0042, 'bracket',0.0322, ...
-             'rodEnd',0.020, 'tube',0.0068, 'motor',0.330, 'base',0.250);
+             'rodEnd',0.020, 'tube',0.0068, 'motor',0.330, 'base',0.250, 'hand',0.0129, ...
+             'bearing',0.0057, 'screwM6x12',0.0063, 'screwM3x6',0.00066);
+% M3x10 + M3 nut weighed together (1.51 g); nut 0.40 g from its ISO 4032 size (s 5.5, m 2.4) in steel, rest the screw
+P.m.nutM3 = 0.00040;  P.m.screwM3x10 = 0.00151 - P.m.nutM3;
 P.m.rodHousing = P.m.rodEnd - 694.8e-9*P.rhoSteel;   % weighed rod end minus its steel ball (694.8 mm^3, modelled separately)
 P.q0   = -40;            % deg, assembly guess (arms up)
 P.dir  = fileparts(mfilename('fullpath'));                        % this folder: models (.slx) are saved here
@@ -140,12 +143,12 @@ for i = 1:3
     Tmo = blk('sm_lib/Frames and Transforms/Rigid Transform',['MotorFrame' s],[350 y-80],'RotationMethod','None', ...
         'TranslationMethod','Cartesian','TranslationCartesianOffset','[-0.020 -0.020 -0.040]');
     con(Tsh,'R1',Tbr,'L1'); con(Tbr,'R1',BR,'R1'); con(Tbr,'R1',Tmo,'L1'); con(Tmo,'R1',MO,'R1');
-    % bracket hardware (bracket frame, mm): 4x M2.5x6 motor screws, heads in the Ø5.5 counterbores (seat z=4.5),
+    % bracket hardware (bracket frame, mm): 4x M3x6 motor screws, heads in the Ø5.5 counterbores (seat z=4.5),
     % shank toward the motor; 2x M3x6 into the base, heads on the foot flange (y=21.1), shank down (+y) into the base
     footR = [1 0 0; 0 0 -1; 0 1 0];          % screw file Z (head up) -> bracket -Y (up)
     bracketHW{i} = {};
     for c = [-1 -1; -1 1; 1 -1; 1 1]'
-        bracketHW{i}{end+1} = mount(Tbr, sprintf('MotorScrew%s_%d%d', s, c(1)>0, c(2)>0), 'M2.5x6 ISO4762.step', [15.5*c' 4.5], eye(3));
+        bracketHW{i}{end+1} = mount(Tbr, sprintf('MotorScrew%s_%d%d', s, c(1)>0, c(2)>0), 'M3x6 ISO4762.step', [15.5*c' 4.5], eye(3));
     end
     for xs = [-1 1]
         bracketHW{i}{end+1} = mount(Tbr, sprintf('BaseScrew%s_%d', s, xs>0), 'M3x6 ISO4762.step', [30.6*xs 21.1 1e3*P.zHole], footR);
@@ -296,8 +299,8 @@ for i = 1:3
             Ts = blk('sm_lib/Frames and Transforms/Rigid Transform',[e{1}{2} 'Frame' t],[1000 y+20*side+40],'RotationMethod','RotationMatrix', ...
                 'RotationMatrix',rot,'TranslationMethod','Cartesian','TranslationCartesianOffset',['[' sg '*0.0045 0 0]']);
             SC = blk('sm_lib/Body Elements/File Solid',[e{1}{2} t],[1100 y+20*side+40],'ExtGeomFileName',fullfile(P.cad,'M6x12 ISO4762.step'), ...
-                'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Density', ...
-                'Density','P.rhoSteel','GraphicDiffuseColor',mat2str(col.steel));
+                'UnitType','Custom','ExtGeomFileUnits','mm','InertiaType','CalculateFromGeometry','BasedOnType','Mass', ...
+                'Mass','P.m.screwM6x12','MassUnits','kg','GraphicDiffuseColor',mat2str(col.steel));
             con(e{1}{1},'R1',Ts,'L1'); con(Ts,'R1',SC,'R1');
         end
     end
@@ -305,7 +308,7 @@ end
 %% ---- group into nested subsystems for a readable diagram ----
 %% ---- weighed masses: switch those File Solids from density to mass ----
 massOf = {'Base','base'; 'Bracket\d','bracket'; 'Motor\d','motor'; 'SmallDrum\d','smallDrum'; 'Arm\d','connector'; ...
-          'BigDrum\d','bigDrum'; 'RodEndPart[AB]\d[ab]','rodHousing'; 'Tube\d[ab]','tube'};
+          'BigDrum\d','bigDrum'; 'RodEndPart[AB]\d[ab]','rodHousing'; 'Tube\d[ab]','tube'; 'HandPart','hand'};
 for k = 1:size(massOf,1)
     h = find_system(mdl, 'SearchDepth', 1, 'RegExp', 'on', 'Name', ['^' massOf{k,1} '$']);
     assert(~isempty(h), 'no block matches %s', massOf{k,1});
@@ -369,9 +372,13 @@ function names = mount(parent, name, file, pos_mm, R, color)
     P = evalin('base', 'P');
     T = blk('sm_lib/Frames and Transforms/Rigid Transform', [name 'Frame'], [0 0], 'RotationMethod', 'RotationMatrix', ...
         'RotationMatrix', mat2str(R), 'TranslationMethod', 'Cartesian', 'TranslationCartesianOffset', mat2str(pos_mm/1000));
+    % weighed parts get their mass (info.txt); anything else steel density
+    hw = {'606ZZ.step','bearing'; 'M3x6 ISO4762.step','screwM3x6'; 'M3x10 ISO4762.step','screwM3x10'; 'M3 nut ISO4032.step','nutM3'};
+    k = find(strcmp(hw(:,1), file), 1);
+    if isempty(k), mass = {'BasedOnType', 'Density', 'Density', 'P.rhoSteel'};
+    else,          mass = {'BasedOnType', 'Mass', 'Mass', ['P.m.' hw{k,2}], 'MassUnits', 'kg'}; end
     S = blk('sm_lib/Body Elements/File Solid', name, [0 0], 'ExtGeomFileName', fullfile(P.cad, file), 'UnitType', 'Custom', ...
-        'ExtGeomFileUnits', 'mm', 'InertiaType', 'CalculateFromGeometry', 'BasedOnType', 'Density', 'Density', 'P.rhoSteel', ...
-        'GraphicDiffuseColor', mat2str(color));
+        'ExtGeomFileUnits', 'mm', 'InertiaType', 'CalculateFromGeometry', mass{:}, 'GraphicDiffuseColor', mat2str(color));
     con(parent, 'R1', T, 'L1'); con(T, 'R1', S, 'R1');
     names = {[name 'Frame'], name};
 end
