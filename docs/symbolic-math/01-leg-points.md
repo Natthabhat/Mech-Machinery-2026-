@@ -80,3 +80,5 @@ C{i} = p + Rz*[r; 0; 0];                                   % hand attachment
 
 (The code writes the points in world coordinates, `Rz*(leg-frame point)`; the lengths between them are the same in
 either frame.)
+
+Next: [2. The forearm-length equation](02-forearm-equation.md)

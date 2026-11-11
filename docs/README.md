@@ -5,3 +5,4 @@ Add assembly, setup, operation, troubleshooting, and maintenance instructions. I
 ## Symbolic math walk-through
 
 1. [The points of one leg](symbolic-math/01-leg-points.md)
+2. [The forearm-length equation](symbolic-math/02-forearm-equation.md)
