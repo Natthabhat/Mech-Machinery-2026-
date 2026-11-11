@@ -22,3 +22,8 @@ slprj/
 *.bak
 *.tmp
 *.lock
+
+# Simulation outputs (rebuilt by the scripts)
+simulation/*.slx
+*.avi
+*.log

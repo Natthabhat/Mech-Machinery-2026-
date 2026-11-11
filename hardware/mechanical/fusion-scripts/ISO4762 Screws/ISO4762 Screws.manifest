@@ -1,0 +1,10 @@
+{
+	"autodeskProduct": "Fusion",
+	"type": "script",
+	"author": "",
+	"description": {
+		"": "Builds ISO 4762 socket head cap screws (M3x6, M2.5x6) with modelled threads and saves them to the active project"
+	},
+	"supportedOS": "windows|mac",
+	"editEnabled": true
+}
