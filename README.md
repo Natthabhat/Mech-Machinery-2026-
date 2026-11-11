@@ -10,7 +10,7 @@
 - **Status:** Prototype assembled; CAD final; Simscape Multibody model and symbolic kinematics/dynamics done
 - **Last updated:** 2026-11-11
 
-![Delta haptic prototype animation](media/delta_symbolic_anim_frame.png)
+<img src="media/prototype_4.jpg" alt="Delta haptic prototype" height="360"> <img src="media/delta_symbolic_anim_frame.png" alt="Symbolic kinematics animation" height="360">
 
 ## Quick start
 
