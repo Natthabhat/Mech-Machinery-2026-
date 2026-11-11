@@ -20,6 +20,24 @@
 
 Details, results and assumptions: [`simulation/README.md`](simulation/README.md). Parts: [`hardware/mechanical/README.md`](hardware/mechanical/README.md).
 
+## Symbolic math walk-through
+
+A step-by-step explanation of the kinematics and dynamics behind
+[`simulation/delta_symbolic_anim.m`](simulation/delta_symbolic_anim.m) and
+[`simulation/delta_symbolic.m`](simulation/delta_symbolic.m), with diagrams and worked numbers from this device.
+
+| Part | Preview |
+|---|---|
+| [1. The points of one leg](docs/symbolic-math/01-leg-points.md) | Shoulder Aᵢ, elbow Bᵢ(qᵢ) and hand attachment Cᵢ(p) in each leg's own frame, side and top view. Why the two parallel rods count as one. |
+| [2. The forearm-length equation](docs/symbolic-math/02-forearm-equation.md) | \|Cᵢ − Bᵢ\| = Lb becomes a·cos q + b·sin q + c = 0. Geometrically the elbow sits where two circles cross (law of cosines). |
+| [3. Solving for q](docs/symbolic-math/03-solving-for-q.md) | Half-angle substitution u = tan(q/2) gives a quadratic: q = 2·atan((b ± √(a² + b² − c²))/(a − c)). Two solutions (elbow out / in); the square root marks the workspace edge. |
+| [4. Velocity and the Jacobian](docs/symbolic-math/04-velocity-jacobian.md) | A rod cannot stretch, so both ends move equally along it: Φₚṗ + Φ_q q̇ = 0 and ṗ = J q̇. 1° on every arm lifts the hand 1.57 mm. |
+| [5. Acceleration](docs/symbolic-math/05-acceleration.md) | Differentiating again adds velocity-squared terms c: p̈ = J q̈ + β. Even at constant hand speed the arms must accelerate (worked example checked against MATLAB). |
+| [6. Dynamics](docs/symbolic-math/06-dynamics.md) | Motor → capstan (×N, inertia ×N²) → arm → rods (Jᵀ) → hand. (M_q + m_p JᵀJ)q̈ = τ_s − G − b q̇ − Jᵀ(m_p(β + g e_z) − F); ≈ 10.7 mN·m per motor floats the device. |
+| [7. Putting it together](docs/symbolic-math/07-animation-script.md) | How the animation script chains parts 1–5: symbols → solve → path p(t) → `diff` → checks against the numeric solvers → `fanimator`. |
+
+<img src="docs/symbolic-math/img/leg_side_view.svg" alt="Points of one leg" height="240"> <img src="docs/symbolic-math/img/forearm_two_circles.svg" alt="Forearm constraint as two circles" height="240">
+
 ## Device details
 
 | Item | Value |
