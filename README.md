@@ -13,7 +13,7 @@
 <img src="media/final_unit_3.jpg" alt="The real delta haptic unit" height="360"> <a href="media/final_unit_demo.mp4"><img src="media/final_unit_demo_poster.jpg" alt="Video: moving the real unit by hand" height="360"></a> <img src="media/delta_symbolic_anim_frame.png" alt="Symbolic kinematics animation" height="360">
 
 Left: the final unit. Middle: [video](media/final_unit_demo.mp4) of the handle moved by hand (18.5 s). Right: the
-symbolic kinematics animation. More photos with captions: [`media/`](media/README.md).
+symbolic kinematics animation. More photos: [`media/`](media/README.md).
 
 ## Quick start
 
