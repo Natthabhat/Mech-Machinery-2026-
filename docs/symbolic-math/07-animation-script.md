@@ -1,6 +1,6 @@
 # 7. Putting it together: how `delta_symbolic_anim.m` runs
 
-Part 7 (last) of the symbolic math walk-through. Previous: [6. Dynamics](06-dynamics.md).
+Part 7 of the symbolic math walk-through. Previous: [6. Dynamics](06-dynamics.md).
 
 [`delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m) does parts 1–5 in order, checks itself, then
 draws:
@@ -78,3 +78,5 @@ wrong animation.
 
 **Not in the animation:** forces. It is kinematics only. A natural next step is to call `delta_motor_torque` along
 the same path and add the motor torques needed to float the device and move it round the circle.
+
+Next: [8. Degrees of freedom and kinematic diagram](08-dof-analysis.md)

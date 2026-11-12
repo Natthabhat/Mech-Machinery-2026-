@@ -15,3 +15,4 @@ repository, which keeps only the multibody model and the symbolic animation.
 5. [Acceleration](symbolic-math/05-acceleration.md)
 6. [Dynamics: from motor torque to hand force](symbolic-math/06-dynamics.md)
 7. [Putting it together: the animation script](symbolic-math/07-animation-script.md)
+8. [Degrees of freedom and kinematic diagram](symbolic-math/08-dof-analysis.md)

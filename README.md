@@ -38,6 +38,7 @@ A step-by-step explanation of the kinematics and dynamics behind
 | [5. Acceleration](docs/symbolic-math/05-acceleration.md) | Differentiating again adds velocity-squared terms c: p̈ = J q̈ + β. Even at constant hand speed the arms must accelerate (worked example checked against MATLAB). |
 | [6. Dynamics](docs/symbolic-math/06-dynamics.md) | Motor → capstan (×N, inertia ×N²) → arm → rods (Jᵀ) → hand. (M_q + m_p JᵀJ)q̈ = τ_s − G − b q̇ − Jᵀ(m_p(β + g e_z) − F); ≈ 10.7 mN·m per motor floats the device. |
 | [7. Putting it together](docs/symbolic-math/07-animation-script.md) | How the animation script chains parts 1–5: symbols → solve → path p(t) → `diff` → checks against the numeric solvers → `fanimator`. |
+| [8. Degrees of freedom](docs/symbolic-math/08-dof-analysis.md) | Kinematic diagram and joint list (3 R + 12 S). Grübler–Kutzbach: M = 6(11 − 1 − 15) + 39 = 9 = 3 hand translations + 6 idle rod spins; fully actuated by 3 motors. |
 
 <img src="docs/symbolic-math/img/leg_side_view.svg" alt="Points of one leg" height="240"> <img src="docs/symbolic-math/img/forearm_two_circles.svg" alt="Forearm constraint as two circles" height="240">
 
