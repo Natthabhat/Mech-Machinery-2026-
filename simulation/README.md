@@ -53,7 +53,7 @@ stored in the repo; build them with the commands above.
 |---|---|---|
 | `R` | 80.95 / 79.55 / 78.83 mm | base centre → shoulder pivot, per leg (from the base screw holes) |
 | `H` | 124.1 mm | shoulder pivot height above the base top |
-| `La` | 72.1 mm | upper arm, pivot → elbow (from CAD, not yet measured) |
+| `La` | 72.1 mm | upper arm, pivot → elbow |
 | `Lb` | 170 mm | forearm, rod-end eye → eye (measured) |
 | `r` | 34 mm | hand centre → hand rod-end bolt line |
 | `N` | 76/9 ≈ 8.44 | capstan ratio (motor and arm turn opposite ways) |
@@ -85,7 +85,7 @@ Checked during development (the checking and dynamics scripts are not in this re
 
 ## Assumptions
 
-- Geometry exactly as in the final CAD; all parts rigid; joints have no play. **La is not yet measured.**
+- All parts rigid; joints have no play.
 - Each pair of forearm rods stays parallel, so the hand stays level.
 - Rope: no slip, no stretch; end-stops modelled as stiff springs (2000 N·m/rad, 2 N·m·s/rad).
 - Masses: all parts weighed (`info.txt`), including hand, bearings, screws and nuts; rod-end balls at steel
