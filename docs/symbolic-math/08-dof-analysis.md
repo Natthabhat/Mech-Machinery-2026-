@@ -70,21 +70,6 @@ The 3 useful DOF are **pure translation x, y, z**. In each leg the two equal, pa
 with the elbow bar and the hand edge, so the hand edge stays parallel to its elbow bar. The three elbow bars point in
 three directions (legs 120° apart), which locks all three rotations of the hand.
 
-## Cross-checks
-
-**Loop method.** Independent loops L = j − n + 1 = 15 − 11 + 1 = 5 (three parallelograms, two loops closing the
-legs through the hand). Each spatial loop imposes 6 constraints:
-
-$$M = \sum f - 6L = 39 - 30 = 9 \qquad ✓$$
-
-**Coordinate counting.** Hand position + orientation (6) + three shoulder angles (3) = 9 coordinates; each S–S rod
-fixes one distance |Cᵢ − Bᵢ| = Lb ([part 2](02-forearm-equation.md)), 6 constraints:
-
-$$M = 9 - 6 = 3 \qquad ✓ \text{ (no idle spins in this count)}$$
-
-**Jacobian rank.** At the home pose (q = −40° on all legs) the Jacobian of [part 4](04-velocity-jacobian.md) has
-singular values 99.5, 98.3, 51.7 mm/rad: rank 3, all three DOF reachable and controllable.
-
 ## Drive chain (motors and capstans)
 
 Each motor rotor + small drum adds one body and one revolute joint (+1) and is tied to its arm by the rope, a
@@ -104,26 +89,3 @@ The model uses a universal joint (U, f = 2) at the elbows J4–J9 instead of a b
 (a free spin drifts numerically in simulation):
 
 $$\sum f = 3(1) + 6(2) + 6(3) = 33,\qquad M = 6(11 - 1 - 15) + 33 = \mathbf{3}$$
-
-## Where the formula is not enough
-
-Grübler counts joints, not geometry. At special poses the real mobility changes:
-
-| Situation | What happens |
-|---|---|
-| arm and rods in a straight line (workspace edge) | J loses rank, the hand loses one direction |
-| all rod pairs in one plane | Φₚ singular, the hand moves with the motors locked (feels loose) |
-| rod-end tilt beyond ±13° | the ball jams on the housing, the joint stops acting as S (workspace limit) |
-
-None of these occurs in the demos' working range.
-
-## Summary
-
-| Method | Result |
-|---|---|
-| Grübler–Kutzbach, real joints | 9 = 3 useful + 6 idle rod spins |
-| Loop method | 9 ✓ |
-| Coordinate counting | 3 ✓ |
-| Simscape model (U at the elbows) | 3 ✓ |
-| Jacobian rank at home pose | 3 ✓ |
-| Actuators | 3 motors, fully actuated |
