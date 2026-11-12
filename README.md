@@ -65,26 +65,24 @@ A step-by-step explanation of the kinematics and dynamics behind
 
 The simulation and calculations assume:
 
-1. **Geometry** is exactly the final CAD (STEP files are final). The upper-arm length La = 72.1 mm is read from the
-   CAD and not yet measured on the prototype.
-2. **Rigid parts, ideal joints:** no flex in the printed parts, no play in bearings or rod ends, no assembly error.
-3. **Parallel forearm rods** in each leg stay parallel and equal, so the hand never tilts.
-4. **Rope** does not slip or stretch, so the capstan ratio is exactly 76/9; rope pretension and creep are ignored.
+1. **Rigid parts, ideal joints:** no flex in the printed parts, no play in bearings or rod ends, no assembly error.
+2. **Parallel forearm rods** in each leg stay parallel and equal, so the hand never tilts.
+3. **Rope** does not slip or stretch, so the capstan ratio is exactly 76/9; rope pretension and creep are ignored.
    The rope end-stops are modelled as stiff springs (2000 N·m/rad, 2 N·m·s/rad).
-5. **Rod-end tilt limit is 13°** (typical M6 rod end, not from the datasheet). Paths are checked against it; the
+4. **Rod-end tilt limit is 13°** (typical M6 rod end, not from the datasheet). Paths are checked against it; the
    joints in the model do not stop by themselves.
-6. **Masses:** every part uses its weighed mass (`info.txt`), spread uniformly over its CAD shape; only the steel
+5. **Masses:** every part uses its weighed mass (`info.txt`), spread uniformly over its CAD shape; only the steel
    rod-end balls use steel density (7850 kg/m³). The M3×10 + nut pair was weighed together and split by the nut's
    ISO size. Motor rotor inertia 54 g·cm² (typical NEMA17).
-7. **Friction:** only a viscous shoulder damping of 2 mN·m·s/rad (estimate). Bearing and rope friction, stepper
+6. **Friction:** only a viscous shoulder damping of 2 mN·m·s/rad (estimate). Bearing and rope friction, stepper
    detent torque and backlash are not modelled.
-8. **Motors** are ideal torque sources with no current, voltage or speed limits. (The current TB6600 stepper drivers
+7. **Motors** are ideal torque sources with no current, voltage or speed limits. (The current TB6600 stepper drivers
    cannot command torque; real force rendering needs current/torque control and encoders.)
-9. **Sensing and control:** joint angles are known exactly; no encoder resolution, delay or control-loop rate.
-10. **Symbolic dynamics:** each arm is one rigid body about its pivot plus N² × the motor rotor inertia; each forearm
-    rod's mass is split half to the elbow and half to the hand (exact for gravity, approximate for inertia).
-11. **Gravity** 9.81 m/s² along −z; the base is level and fixed to the table.
-12. **Collisions** between parts are not modelled.
+8. **Sensing and control:** joint angles are known exactly; no encoder resolution, delay or control-loop rate.
+9. **Symbolic dynamics:** each arm is one rigid body about its pivot plus N² × the motor rotor inertia; each forearm
+   rod's mass is split half to the elbow and half to the hand (exact for gravity, approximate for inertia).
+10. **Gravity** 9.81 m/s² along −z; the base is level and fixed to the table.
+11. **Collisions** between parts are not modelled.
 
 ## Known limitations
 
