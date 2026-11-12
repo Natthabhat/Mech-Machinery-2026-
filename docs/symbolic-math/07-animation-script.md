@@ -47,7 +47,6 @@ through `subs` produces them.
 | Check | Tolerance | Result |
 |---|---|---|
 | q(t) vs `deltaIK` at 13 times | 1e-9 rad | ✓ (≈ 1e-14) |
-| q̇, q̈ vs `delta_kinematics_inv` | 1e-8 relative | ✓ (≈ 1e-15) |
 | rope stops, every sample | −85° … −2.8° | q in −73.5° … −17.6° ✓ |
 | rod-end tilt, every sample | < 13° | max 10.8° ✓ |
 

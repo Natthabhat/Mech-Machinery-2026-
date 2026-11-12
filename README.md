@@ -24,7 +24,7 @@ Details, results and assumptions: [`simulation/README.md`](simulation/README.md)
 
 A step-by-step explanation of the kinematics and dynamics behind
 [`simulation/delta_symbolic_anim.m`](simulation/delta_symbolic_anim.m) and
-[`simulation/delta_symbolic.m`](simulation/delta_symbolic.m), with diagrams and worked numbers from this device.
+`simulation/delta_symbolic.m`, with diagrams and worked numbers from this device.
 
 | Part | Preview |
 |---|---|

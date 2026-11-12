@@ -4,6 +4,10 @@ Add assembly, setup, operation, troubleshooting, and maintenance instructions. I
 
 ## Symbolic math walk-through
 
+Files named in code font but not linked (`delta_symbolic.m`, `delta_kinematics*.m`, `delta_dynamics.m`,
+`delta_motor_torque.m`, `delta_sym_*.m`) were used to derive and verify the results; they are not part of this
+repository, which keeps only the multibody model and the symbolic animation.
+
 1. [The points of one leg](symbolic-math/01-leg-points.md)
 2. [The forearm-length equation](symbolic-math/02-forearm-equation.md)
 3. [Solving for q](symbolic-math/03-solving-for-q.md)

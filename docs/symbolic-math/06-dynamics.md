@@ -7,7 +7,7 @@ hand, force comes back:
 
 ![Motor, capstan, upper arm, rods and hand; motion flows right, force flows left](img/dynamics_chain.svg)
 
-Values come from [`delta_symbolic.m`](../../simulation/delta_symbolic.m), which measures masses, centres of mass and
+Values come from `delta_symbolic.m`, which measures masses, centres of mass and
 inertias from the Simscape model with Inertia Sensors, so the equations match the model exactly.
 
 ## Step 1: motor and capstan
@@ -79,12 +79,12 @@ $$(M_q + m_p J^\top J)\,\ddot q = \tau_s - G(q) - b\,\dot q - J^\top\big(m_p(\be
 | Jᵀ·m_p·g·e_z | weight of hand + rods, carried to the shoulders |
 | Jᵀ·F | the user's push, carried to the shoulders |
 
-This is [`delta_dynamics.m`](../../simulation/delta_dynamics.m): motor torques and user force in, arm accelerations
+This is `delta_dynamics.m`: motor torques and user force in, arm accelerations
 out. Checked against Simscape: released from rest, the start accelerations agree within 0.9 %.
 
 ## Step 6: backwards, motor torques for haptics
 
-[`delta_motor_torque.m`](../../simulation/delta_motor_torque.m) solves the same equation for τ_m. Held still
+`delta_motor_torque.m` solves the same equation for τ_m. Held still
 (q̇ = 0, q̈ = 0):
 
 $$\tau_m = -\frac{G(q) + J^\top\big(m_p\,g\,e_z + F_{\text{hand}}\big)}{N}$$

@@ -19,10 +19,8 @@ Open MATLAB in this folder, then:
 | Command | What it does |
 |---|---|
 | `build_delta_haptic` | Builds `delta_haptic.slx` (Simscape Multibody) from the STEP files; all parameters `P.*` are at the top |
-| `check_delta_haptic` | Checks screw-hole alignment, forward kinematics vs Simscape, rope end-stops, IK round trip |
 | `circle_demo` | Grabs the handle top and moves it round the largest allowed circle, 3 laps (live 3D view) |
 | `helix_demo` | Traces the edge of the workspace: lowest and highest point in each of 3 laps, 7 s per lap |
-| `delta_symbolic` | Symbolic kinematics + dynamics, generates `delta_sym_*.m`, saves `delta_symbolic.mat`, verifies vs Simscape |
 | `delta_symbolic_anim` | Classroom-style symbolic IK (`solve`), velocity/acceleration (`diff`) and a `fanimator` animation |
 
 `circle_demo(false)` / `helix_demo(false)` run without real-time pacing. Generated models (`*.slx`) are not
@@ -33,16 +31,12 @@ stored in the repo; build them with the commands above.
 | File | Purpose |
 |---|---|
 | `build_delta_haptic.m` | Model builder and parameter set `P` (geometry, masses, drive, limits) |
-| `check_delta_haptic.m` | Model checks (see above) |
 | `circle_demo.m`, `helix_demo.m` | Demo paths |
 | `run_grab_path.m` | Shared: copies the model, adds a 6-DOF "grab" joint on the handle top and drives it along a path |
 | `maxRadius.m` | Largest circle at a height that stays inside the rope end-stops and the rod-end tilt limit |
 | `rodEndTilt.m` | Rod-end misalignment angle per leg for a hand position |
 | `deltaFK.m`, `deltaIK.m` | Numeric forward / inverse position kinematics |
-| `delta_kinematics.m`, `delta_kinematics_inv.m` | Position, velocity and acceleration, forward and inverse |
-| `delta_dynamics.m` | Forward dynamics: shoulder accelerations from motor torques and hand force |
-| `delta_motor_torque.m` | Motor torques for a motion and hand force (gravity compensation + force rendering) |
-| `delta_symbolic.m`, `delta_sym_*.m`, `delta_symbolic.mat` | Symbolic derivation, generated functions, saved equations and parameters |
+| `delta_symbolic.mat` | Device parameters `P` used by the symbolic animation |
 | `delta_symbolic_anim.m` | Symbolic IK + animation (every variable labelled in the code) |
 
 ## Model
@@ -67,13 +61,16 @@ stored in the repo; build them with the commands above.
 | `tiltMax` | 13° | rod-end misalignment limit (typical M6 rod end) |
 | `b` | 2e-3 N·m·s/rad | shoulder damping (estimate) |
 
-## Kinematics and dynamics (`delta_symbolic.m`)
+## Kinematics and dynamics
 
 - Loop closure per leg: Φᵢ = |p + r·uᵢ − Eᵢ(qᵢ)|² − Lb² = 0, elbow Eᵢ = (Rᵢ + La cos qᵢ)uᵢ + tᵢvᵢ + (H − La sin qᵢ)e_z.
 - Closed-form IK (arms-up branch), Jacobian J = −Φₚ⁻¹Φ_q, ṗ = J q̇, p̈ = J q̈ − Φₚ⁻¹c.
 - Reduced dynamics: (M_q + m_p JᵀJ) q̈ = τ_s − G − b q̇ − Jᵀ(m_p(β + g e_z) − F), motor torque τ_m = −τ_s/N.
 
 ## Verified results
+
+Checked during development (the checking and dynamics scripts are not in this repository; see
+[the symbolic math walk-through](../docs/symbolic-math/) for the derivations):
 
 | Check | Result |
 |---|---|

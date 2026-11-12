@@ -2,7 +2,7 @@
 
 Part 1 of the walk-through of the symbolic math in
 [`simulation/delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m) and
-[`simulation/delta_symbolic.m`](../../simulation/delta_symbolic.m).
+`simulation/delta_symbolic.m`.
 
 The three legs are identical, only turned around the base by their angle φᵢ (180°, 300°, 60°). So all the
 geometry is written once, in the frame of one leg:

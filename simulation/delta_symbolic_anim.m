@@ -86,18 +86,13 @@ vpa(qIK, 4)                      % show q1, q2, q3 (x, y, z) with 4 digits (the 
 q_t   = subs(qIK, p, pt);        % q_t   : shoulder angles q(t) (rad)
 dq_t  = diff(q_t, t);            % dq_t  : shoulder angular velocity dq/dt (rad/s)
 ddq_t = diff(q_t, t, 2);         % ddq_t : shoulder angular acceleration d2q/dt2 (rad/s^2)
-dp_t  = diff(pt, t);             % dp_t  : hand velocity dp/dt (m/s)
-ddp_t = diff(pt, t, 2);          % ddp_t : hand acceleration d2p/dt2 (m/s^2)
 
-%% Check against the numeric solvers (deltaIK, delta_kinematics_inv) at a few times
+%% Check against the numeric inverse kinematics (deltaIK) at a few times
 % matlabFunction turns each symbolic result into a fast numeric function of t: qf(t), dqf(t), ...
 qf = matlabFunction(q_t); dqf = matlabFunction(dq_t); ddqf = matlabFunction(ddq_t);
-pf = matlabFunction(pt);  dpf = matlabFunction(dp_t); ddpf = matlabFunction(ddp_t);
+pf = matlabFunction(pt);
 for tt = linspace(0, nLap*Tlap, 13)                       % tt : check times (s)
-    [qn, dqn, ddqn] = delta_kinematics_inv(pf(tt), dpf(tt), ddpf(tt));   % numeric q, dq, ddq
     assert(norm(qf(tt) - deg2rad(deltaIK(pf(tt), P)).') < 1e-9, 'q(t) does not match deltaIK');
-    assert(norm(dqf(tt) - dqn) < 1e-8*max(1, norm(dqn)) && norm(ddqf(tt) - ddqn) < 1e-8*max(1, norm(ddqn)), ...
-        'dq/ddq do not match delta_kinematics_inv');
 end
 tv = linspace(0, nLap*Tlap, 201);                                  % tv : time samples for the plots (s)
 qs = rad2deg(cell2mat(arrayfun(qf, tv, 'UniformOutput', false))); % qs : q at every sample (deg), 3 x 201

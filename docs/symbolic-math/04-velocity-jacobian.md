@@ -45,7 +45,7 @@ $$n_i\cdot\dot p = L_a\,(n_i\cdot t_i)\,\dot q_i$$
 $$\dot q_i = \frac{n_i\cdot\dot p}{L_a\,(n_i\cdot t_i)}\qquad\Longleftrightarrow\qquad \dot q = J^{-1}\dot p,\quad J^{-1} = -\Phi_q^{-1}\Phi_p$$
 
 Φ_q is diagonal, so no matrix inverse is needed, only a division per row: `Jinv = -Pp ./ pq` in
-[`delta_kinematics_inv.m`](../../simulation/delta_kinematics_inv.m).
+`delta_kinematics_inv.m`.
 
 **Forward (arm speeds → hand speed)** needs a real 3×3 inverse, because the three rods share the hand:
 
@@ -80,7 +80,7 @@ A rod almost at 90° to its arm is the best case: the arm's motion goes almost e
 
 - [`delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m): `dq_t = diff(q_t, t)` applies the chain rule
   directly, (∂q/∂p)·ṗ = J⁻¹ṗ; checked against `delta_kinematics_inv` at 13 times to 1e-8.
-- [`delta_symbolic.m`](../../simulation/delta_symbolic.m): `Phi_p = jacobian(Phi, p)`, `Phi_q = jacobian(Phi, q)`,
+- `delta_symbolic.m`: `Phi_p = jacobian(Phi, p)`, `Phi_q = jacobian(Phi, q)`,
   generated as `delta_sym_Phi_p.m` / `delta_sym_Phi_q.m`; `delta_kinematics.m` forms J = −Φₚ⁻¹Φ_q from them.
 
 The same J also maps forces: τ = Jᵀ·F turns a force at the hand into shoulder torques (part 6, dynamics).

@@ -47,13 +47,13 @@ To keep the hand at constant speed the arm must keep speeding up by about 23°/s
 
 ## Step 4: solve both ways
 
-**Inverse (hand motion → arm accelerations)**, [`delta_kinematics_inv.m`](../../simulation/delta_kinematics_inv.m):
+**Inverse (hand motion → arm accelerations)**, `delta_kinematics_inv.m`:
 
 $$\ddot q = -\Phi_q^{-1}\big(\Phi_p\,\ddot p + c\big)$$
 
 (each row a simple division, Φ_q is diagonal)
 
-**Forward (arm motion → hand acceleration)**, [`delta_kinematics.m`](../../simulation/delta_kinematics.m):
+**Forward (arm motion → hand acceleration)**, `delta_kinematics.m`:
 
 $$\ddot p = J\ddot q + \beta,\qquad \beta = -\Phi_p^{-1}c$$
 
@@ -72,7 +72,7 @@ dynamics (part 6) need it: moving the hand's mass takes force even when the moto
 
 - [`delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m): `ddq_t = diff(q_t, t, 2)`; the chain rule
   produces every c-term automatically.
-- [`delta_symbolic.m`](../../simulation/delta_symbolic.m): `c = jacobian(Phi_p*dp + Phi_q*dq, [p; q]) * [dp; dq]`,
+- `delta_symbolic.m`: `c = jacobian(Phi_p*dp + Phi_q*dq, [p; q]) * [dp; dq]`,
   generated as `delta_sym_c.m`; agrees with finite differences to about 1e-7.
 
 Next: [6. Dynamics](06-dynamics.md)
