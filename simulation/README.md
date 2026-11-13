@@ -20,10 +20,9 @@ Open MATLAB in this folder, then:
 |---|---|
 | `build_delta_haptic` | Builds `delta_haptic.slx` (Simscape Multibody) from the STEP files; all parameters `P.*` are at the top |
 | `circle_demo` | Grabs the handle top and moves it round the largest allowed circle, 3 laps (live 3D view) |
-| `helix_demo` | Traces the edge of the workspace: lowest and highest point in each of 3 laps, 7 s per lap |
 | `delta_symbolic_anim` | Classroom-style symbolic IK (`solve`), velocity/acceleration (`diff`) and a `fanimator` animation |
 
-`circle_demo(false)` / `helix_demo(false)` run without real-time pacing. Generated models (`*.slx`) are not
+`circle_demo(false)` runs without real-time pacing. Generated models (`*.slx`) are not
 stored in the repo; build them with the commands above.
 
 ## Files
@@ -31,7 +30,7 @@ stored in the repo; build them with the commands above.
 | File | Purpose |
 |---|---|
 | `build_delta_haptic.m` | Model builder and parameter set `P` (geometry, masses, drive, limits) |
-| `circle_demo.m`, `helix_demo.m` | Demo paths |
+| `circle_demo.m` | Circle demo on the Simscape model |
 | `run_grab_path.m` | Shared: copies the model, adds a 6-DOF "grab" joint on the handle top and drives it along a path |
 | `maxRadius.m` | Largest circle at a height that stays inside the rope end-stops and the rod-end tilt limit |
 | `rodEndTilt.m` | Rod-end misalignment angle per leg for a hand position |
@@ -81,7 +80,6 @@ Checked during development (the checking and dynamics scripts are not in this re
 | Free-fall start acceleration, symbolic vs Simscape | within 0.9 % |
 | Base screw holes vs bracket | within 0.005 mm (front), 0.013 mm (rear slot) |
 | Circle demo (13° rod-end limit) | radius 28.3 mm, tracking 0.07 mm, tilt ≤ 10° |
-| Helix demo | handle height 278.8–384.2 mm, widest circle 35.6 mm, tracking 0.28 mm, tilt ≤ 12.5° |
 
 ## Assumptions
 

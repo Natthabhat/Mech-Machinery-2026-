@@ -52,16 +52,15 @@ for i = 1:3
     eq(i) = sum((C{i} - B{i}).^2) == Lb^2; %#ok<SAGROW>      % eq(i) : one equation per leg, unknown q_i
 end
 
-%% Hand path p(t): circle in x-y while the height bobs up and down, 2 laps
+%% Hand path p(t): horizontal circle at constant height, 2 laps
 Tlap = 5;      % Tlap : time for one lap (s)
 nLap = 2;      % nLap : number of laps
-Az   = 0.020;  % Az   : height amplitude (m)
-p0   = deltaFK(P.qMid*[1 1 1], P);   % p0 : centre of the path = hand position with every arm at mid-travel
+p0   = deltaFK(P.qMid*[1 1 1], P);   % p0 : centre of the circle = hand position with every arm at mid-travel
 % Rc : circle radius (m) = 90 % of the largest circle inside the rope end-stops and the rod-end tilt limit
-Rc = 0.9*min(arrayfun(@(zz) maxRadius(P, zz, 1, p0(1:2)), p0(3) + linspace(-Az, Az, 9)));
+Rc = 0.9*maxRadius(P, p0(3), 1, p0(1:2));
 pt = [p0(1) + Rc*cos(2*pi*t/Tlap);   % pt : hand position as a function of time, p(t)
       p0(2) + Rc*sin(2*pi*t/Tlap);
-      p0(3) + Az*sin(4*pi*t/Tlap)];
+      p0(3) + 0*t];                  % 0*t keeps z a function of t (same height all the way round)
 
 %% Solve eq. for q_i(x,y,z)
 % Expanding |C_i - B_i|^2 = Lb^2 gives  a*cos(q) + b*sin(q) + c = 0  (cos^2 + sin^2 = 1 removes the squares).
@@ -99,8 +98,8 @@ qs = rad2deg(cell2mat(arrayfun(qf, tv, 'UniformOutput', false))); % qs : q at ev
 ps = cell2mat(arrayfun(pf, tv, 'UniformOutput', false));          % ps : hand position at every sample (m)
 assert(all(qs(:) > P.qMin & qs(:) < P.qMax), 'path leaves the rope limits');        % rope end-stops
 assert(all(rodEndTilt(ps, P) < P.tiltMax, 'all'), 'path tilts a rod end past its limit');  % rod-end tilt
-fprintf('circle radius %.1f mm, height +-%.0f mm; q in [%.1f %.1f] deg, max rod-end tilt %.1f deg\n', ...
-    1e3*Rc, 1e3*Az, min(qs(:)), max(qs(:)), max(rodEndTilt(ps, P), [], 'all'));
+fprintf('circle radius %.1f mm at height %.1f mm; q in [%.1f %.1f] deg, max rod-end tilt %.1f deg\n', ...
+    1e3*Rc, 1e3*p0(3), min(qs(:)), max(qs(:)), max(rodEndTilt(ps, P), [], 'all'));
 
 %% Plot q, dq, ddq vs time (numeric values of the symbolic results: fplot on these long expressions is very slow)
 figure('Name', 'Shoulder kinematics')
@@ -136,12 +135,16 @@ Ab = [A{:} A{1}];
 plot3(Ab(1,:), Ab(2,:), Ab(3,:), 'b^-')                      % blue triangles: shoulder pivots A_i (base)
 for i = 1:3, plot3(Bn{i}(1,:), Bn{i}(2,:), Bn{i}(3,:)), end  % thin arcs: elbow paths B_i(t)
 opts = {'AnimationRange', [0 nLap*Tlap], 'FrameRate', fps};
-fanimator(H_arm, opts{:}); fanimator(H_forearm, opts{:}); fanimator(H_hand, opts{:});
-plot3(ps(1,:), ps(2,:), ps(3,:), '--m')                      % magenta dashes: hand path p(t)
+Pn = cell2mat(arrayfun(pf, tf, 'UniformOutput', false));     % Pn : hand centre at every frame
+H_centre  = @(tt) plot3(Pn(1,fr(tt)), Pn(2,fr(tt)), Pn(3,fr(tt)), 'mo', 'MarkerSize', 8, 'MarkerFaceColor', 'm');  % moving hand centre
+fanimator(H_arm, opts{:}); fanimator(H_forearm, opts{:}); fanimator(H_hand, opts{:}); fanimator(H_centre, opts{:});
+th = linspace(0, 2*pi, 181);                                 % circle path p(t), drawn once
+plot3(p0(1) + Rc*cos(th), p0(2) + Rc*sin(th), p0(3) + 0*th, '-m', 'LineWidth', 2)
+plot3(p0(1), p0(2), p0(3), 'm+', 'MarkerSize', 10)            % circle centre
 hold off
 axis equal; grid on; view(35, 20); xlabel('x (m)'); ylabel('y (m)'); zlabel('z (m)')
-axis([-0.15 0.15 -0.15 0.15 H - 0.03 max(ps(3,:)) + 0.03])   % hand works above the shoulder pivots (arms up)
-title('red: upper arms   green: forearm rods   blue: hand   magenta: hand path')
+axis([-0.15 0.15 -0.15 0.15 H - 0.03 p0(3) + 0.05])          % hand works above the shoulder pivots (arms up)
+title(sprintf('magenta: circle path (R = %.1f mm)   red: upper arms   green: rods   blue: hand', 1e3*Rc))
 
 playAnimation
 

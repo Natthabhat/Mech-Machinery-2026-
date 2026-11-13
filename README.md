@@ -19,7 +19,7 @@ symbolic kinematics animation. More photos: [`media/`](media/README.md).
 
 1. MATLAB R2026a with Simulink, Simscape, Simscape Multibody and Symbolic Math Toolbox.
 2. Open MATLAB in `simulation/` and run `build_delta_haptic` (builds `delta_haptic.slx` from the STEP files in
-   `hardware/mechanical/cad/`), then `circle_demo`, `helix_demo` or `delta_symbolic_anim`.
+   `hardware/mechanical/cad/`), then `circle_demo` or `delta_symbolic_anim`.
 
 Details, results and assumptions: [`simulation/README.md`](simulation/README.md). Parts: [`hardware/mechanical/README.md`](hardware/mechanical/README.md).
 

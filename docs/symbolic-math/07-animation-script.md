@@ -24,12 +24,13 @@ elbow-out solution by comparing both with `deltaIK`. `qIK` is then three formula
 
 ## Step 3: the hand path
 
-$$p(t) = \big[x_0 + R_c\cos\tfrac{2\pi t}{5},\ \ y_0 + R_c\sin\tfrac{2\pi t}{5},\ \ z_0 + 0.02\sin\tfrac{4\pi t}{5}\big]$$
+$$p(t) = \big[x_0 + R_c\cos\tfrac{2\pi t}{5},\ \ y_0 + R_c\sin\tfrac{2\pi t}{5},\ \ z_0\big]$$
 
 - Centre p₀: hand position with every arm at mid-travel.
-- Rc = 0.9 × the largest circle `maxRadius` allows over the ±20 mm height range, 1° clear of the rope stops and the
-  rod-end tilt limit, giving Rc = 30.7 mm.
-- 5 s per lap, 2 laps; the height goes up and down twice per lap.
+- A horizontal circle at constant height z₀ = 313 mm.
+- Rc = 0.9 × the largest circle `maxRadius` allows at that height, 1° clear of the rope stops and the rod-end tilt
+  limit, giving Rc = 30.7 mm.
+- 5 s per lap, 2 laps.
 
 ## Step 4: substitute and differentiate (parts 4–5)
 
@@ -47,7 +48,7 @@ through `subs` produces them.
 | Check | Tolerance | Result |
 |---|---|---|
 | q(t) vs `deltaIK` at 13 times | 1e-9 rad | ✓ (≈ 1e-14) |
-| rope stops, every sample | −85° … −2.8° | q in −73.5° … −17.6° ✓ |
+| rope stops, every sample | −85° … −2.8° | q in −59.5° … −31.2° ✓ |
 | rod-end tilt, every sample | < 13° | max 10.8° ✓ |
 
 A failed check stops the script with a message, so a wrong branch or an unreachable path cannot quietly produce a
@@ -62,7 +63,8 @@ wrong animation.
 - `fanimator` gets three drawing functions, one per colour: upper arms (red), rod pairs (green, each rod w/2 either
   side along vᵢ), hand triangle (blue). Each draws one line object with NaN gaps, since `fanimator` needs exactly one
   object per function.
-- `playAnimation` plays it in real time. The magenta dashed line is the hand path, the thin arcs the elbow paths.
+- `playAnimation` plays it in real time. The solid magenta circle is the hand path (centre marked +), the magenta dot rides on the hand centre, the thin
+  arcs are the elbow paths.
 
 ## The whole chain on one page
 
