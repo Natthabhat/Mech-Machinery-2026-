@@ -196,6 +196,39 @@ of the handle: `run_grab_path.m` adds a 6-DOF joint whose x, y, z follow the pat
 arms, rods and drums follow as in the real unit when you move the handle by hand. The circle has a 3° margin from
 the rope stops: **radius 28.3 mm, 3 laps, handle tracking error 0.07 mm, rod-end tilt ≤ 10°.**
 
+### 3.4 Real-life use
+
+**Where delta haptic devices are used.** The delta layout is the classic choice for desktop haptic devices: the
+motors sit still on the base, so the moving parts are light, the three legs share the load, and the hand stays level
+without any wrist joints. Well-known examples are the Novint Falcon (consumer games) and the Force Dimension omega /
+delta devices (research and medical). Typical uses:
+
+| Use | What the device does |
+|---|---|
+| Surgical and medical training | the trainee moves the handle like a tool; the device pushes back to make virtual tissue feel soft or bones feel hard |
+| Teleoperation | the handle steers a distant robot (surgical, underwater, nuclear); forces measured at the robot are played back to the hand |
+| Rehabilitation | patients practise guided arm movements; the device assists, resists, or measures how smoothly they move |
+| Virtual prototyping and CAD | designers "touch" a 3D model to feel shapes, clearances and assembly fits before anything is made |
+| Research and education | testing control, perception and force rendering; teaching kinematics on a real parallel robot |
+| Games and simulators | feeling recoil, terrain, steering or impacts through the handle |
+
+**Why a circle path.** A horizontal circle is one of the most common test and exercise paths for a 3-DOF device:
+
+| Real-life use of the circle | Why the circle helps |
+|---|---|
+| **Calibration and accuracy test** | going round a circle uses all three motors in turn (each arm swings once per lap, 120° apart, see the plot in 3.2), so any error in one leg, a wrong length or an encoder offset shows up as a distorted or shifted circle |
+| **Tracking / control test** | a circle at constant speed never stops, so it shows lag, overshoot and friction (for example stepper detent torque) better than point-to-point moves |
+| **Workspace check** | the largest circle that fits shows the usable workspace; here it shows the rod-end tilt limit (≈ 30 mm radius), not the arm travel |
+| **Rehabilitation exercise** | tracing circles is a standard upper-limb therapy task; the device can guide the hand, resist it, or score how round and smooth the circle is |
+| **Haptic guide ("virtual fixture")** | the device renders a circular groove or wall: the user moves freely along the circle and feels a spring force pulling back when leaving it, as used to guide a surgical tool or teach a motion |
+| **Demonstration** | it is the simplest motion that makes all three legs work together, which is why both simulations here use it |
+
+**What this unit can do on a circle.** Following the analysis above: a circle of about 28–31 mm radius at a handle
+height of about 305–340 mm, kept inside the rope end-stops and the 13° rod-end tilt; holding the device against
+gravity needs only ≈ 10.7 mN·m per motor, and 1 N at the hand needs roughly 3.6–9.5 mN·m at a motor. With the
+current stepper drivers it can be moved round the circle by hand or driven as a position robot; rendering forces
+(guides, walls, assistance) needs torque-controlled drives and encoders (see Assumptions 7–8).
+
 ---
 
 ## 4. Running the simulation
