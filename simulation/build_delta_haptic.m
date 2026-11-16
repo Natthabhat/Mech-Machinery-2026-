@@ -377,8 +377,18 @@ function names = mount(parent, name, file, pos_mm, R, color)
     k = find(strcmp(hw(:,1), file), 1);
     if isempty(k), mass = {'BasedOnType', 'Density', 'Density', 'P.rhoSteel'};
     else,          mass = {'BasedOnType', 'Mass', 'Mass', ['P.m.' hw{k,2}], 'MassUnits', 'kg'}; end
-    S = blk('sm_lib/Body Elements/File Solid', name, [0 0], 'ExtGeomFileName', fullfile(P.cad, file), 'UnitType', 'Custom', ...
-        'ExtGeomFileUnits', 'mm', 'InertiaType', 'CalculateFromGeometry', mass{:}, 'GraphicDiffuseColor', mat2str(color));
+    if strcmp(file, 'M3 nut ISO4032.step')
+        % MATLAB's CAD importer reports error -8006 on this Fusion STEP export, so draw the ISO 4032 M3 nut instead:
+        % hexagon 5.5 mm across flats (flats at x = +-2.75), 2.4 mm tall from z = 0 (same as the STEP part)
+        set_param(T, 'TranslationCartesianOffset', mat2str((pos_mm(:) + R*[0; 0; 1.2]).'/1000));   % extrusion is centred
+        hex = [0 3.175; -2.75 1.5875; -2.75 -1.5875; 0 -3.175; 2.75 -1.5875; 2.75 1.5875];
+        S = blk('sm_lib/Body Elements/Extruded Solid', name, [0 0], 'ExtrusionType', 'General', ...
+            'ExtrusionCrossSection', mat2str(hex), 'ExtrusionCrossSectionUnits', 'mm', 'ExtrusionLength', '2.4', ...
+            'ExtrusionLengthUnits', 'mm', 'InertiaType', 'CalculateFromGeometry', mass{:}, 'GraphicDiffuseColor', mat2str(color));
+    else
+        S = blk('sm_lib/Body Elements/File Solid', name, [0 0], 'ExtGeomFileName', fullfile(P.cad, file), 'UnitType', 'Custom', ...
+            'ExtGeomFileUnits', 'mm', 'InertiaType', 'CalculateFromGeometry', mass{:}, 'GraphicDiffuseColor', mat2str(color));
+    end
     con(parent, 'R1', T, 'L1'); con(T, 'R1', S, 'R1');
     names = {[name 'Frame'], name};
 end

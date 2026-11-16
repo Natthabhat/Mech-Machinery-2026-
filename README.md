@@ -247,7 +247,7 @@ All masses weighed.
 | `606ZZ.step` | bearing, 2 per big drum | 6 | 5.7 g |
 | `M6x12 ISO4762.step` | rod-end screws | 12 | 6.3 g |
 | `M3x6 ISO4762.step` | motor, bracket and drum-stub screws | 27 | 0.66 g |
-| `M3x10 ISO4762.step`, `M3 nut ISO4032.step` | rope clamp in the big drum slot | 6 | 1.51 g per pair |
+| `M3x10 ISO4762.step` + M3 nut (ISO 4032) | rope clamp in the big drum slot; the nut is drawn in the model as a built-in hexagon (5.5 mm across flats, 2.4 mm), no STEP file | 6 | 1.51 g per pair |
 
 Electronics (bench test): 3 × TB6600 stepper drivers, ESP32-S3 controller.
 
