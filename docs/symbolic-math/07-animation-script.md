@@ -1,8 +1,8 @@
-# 7. Putting it together: how `delta_symbolic_anim.m` runs
+# 7. Putting it together: how `delta_symbolic_anim.mlx` runs
 
 Part 7 of the symbolic math walk-through. Previous: [6. Dynamics](06-dynamics.md).
 
-[`delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m) does parts 1–5 in order, checks itself, then
+[`delta_symbolic_anim.mlx`](../../simulation/delta_symbolic_anim.mlx) does parts 1–5 in order, checks itself, then
 draws:
 
 ![The six steps of the animation script and the code for each](img/animation_pipeline.svg)

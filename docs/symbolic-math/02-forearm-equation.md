@@ -35,7 +35,7 @@ $$a\cos q + b\sin q + c = 0$$
 
 $$a = -2L_a d_x,\qquad b = 2L_a d_z,\qquad c = |d|^2 + L_a^2 - L_b^2$$
 
-In [`delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m) the coefficients are pulled out of the expanded
+In [`delta_symbolic_anim.mlx`](../../simulation/delta_symbolic_anim.mlx) the coefficients are pulled out of the expanded
 equation (`a`, `b`, `c` in the solve loop); written directly:
 
 ```matlab

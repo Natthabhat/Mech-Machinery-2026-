@@ -168,9 +168,9 @@ $$\text{tilt}_i = \arcsin\frac{|p\cdot v_i - T_i|}{L_b}$$
 which reaches 13° at a radius of about 37 mm. Both circle motions therefore use the largest circle that keeps every
 arm inside its rope end-stops **and** every rod end below 13° (local functions `maxRadius` and `rodEndTilt`), with a small margin.
 
-### 3.2 Symbolic animation (`delta_symbolic_anim.mlx` / `.m`)
+### 3.2 Symbolic animation (`delta_symbolic_anim.mlx`)
 
-Easiest to read as the **live script** [`simulation/delta_symbolic_anim.mlx`](simulation/delta_symbolic_anim.mlx): open it in MATLAB and the explanations, equations, results, plots and animation appear next to the code (saved with its outputs, so they show even before running). The same code is in [`delta_symbolic_anim.m`](simulation/delta_symbolic_anim.m), readable on GitHub.
+A MATLAB **live script**, [`simulation/delta_symbolic_anim.mlx`](simulation/delta_symbolic_anim.mlx): open it in MATLAB and the explanations, equations, results, plots and animation appear next to the code (it is saved with its outputs, so they show even before running; press **Run All** to run it again).
 
 The hand follows a horizontal circle, 2 laps of 5 s:
 
@@ -245,15 +245,14 @@ Or open MATLAB in `simulation/` and use the scripts:
 |---|---|
 | `build_delta_haptic` | builds the Simscape Multibody model `delta_haptic.slx` from the STEP files; all parameters `P.*` are at the top |
 | `circle_demo` | moves the handle round the largest allowed circle, 3 laps, in the 3D view (`circle_demo(false)` without real-time pacing) |
-| `delta_symbolic_anim` | symbolic inverse kinematics, speed and acceleration, plots and the circle animation (or open `delta_symbolic_anim.mlx` and press **Run All**) |
+| open `delta_symbolic_anim.mlx`, **Run All** | symbolic inverse kinematics, speed and acceleration, plots and the circle animation |
 
 | File | Purpose |
 |---|---|
 | `delta_haptic.slx` | ready-to-run Simscape Multibody model (built by `build_delta_haptic.m`) |
 | `build_delta_haptic.m` | model builder and parameter set `P` (geometry, weighed masses, drive, limits, colours); rebuilds `delta_haptic.slx` after changes |
 | `circle_demo.m` | circle motion on the multibody model: builds the path, adds the "grab" joint and runs it; helpers (`run_grab_path`, `maxRadius`, `rodEndTilt`, `deltaFK`, `deltaIK`) are local functions at the end of the file |
-| `delta_symbolic_anim.mlx` | live script of the symbolic math circle animation: 10 explained sections with equations, saved with outputs (open in MATLAB) |
-| `delta_symbolic_anim.m` | same code as a plain script (readable on GitHub); device parameters at the top, numeric kinematics helpers as local functions at the end |
+| `delta_symbolic_anim.mlx` | live script of the symbolic math circle animation: 10 explained sections with equations, saved with outputs; device parameters at the top, numeric kinematics helpers as local functions at the end |
 
 **Model structure:** top level Environment, Leg 1–3, Hand, MotorTorque. Each leg: motor + bracket → drive (motor
 shaft, small drum, rope as a no-slip gear constraint) → upper arm (shoulder joint with rope end-stops, connector, big

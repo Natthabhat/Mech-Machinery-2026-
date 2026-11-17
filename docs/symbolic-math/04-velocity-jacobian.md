@@ -78,7 +78,7 @@ A rod almost at 90° to its arm is the best case: the arm's motion goes almost e
 
 ## In the code
 
-- [`delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m): `dq_t = diff(q_t, t)` applies the chain rule
+- [`delta_symbolic_anim.mlx`](../../simulation/delta_symbolic_anim.mlx): `dq_t = diff(q_t, t)` applies the chain rule
   directly, (∂q/∂p)·ṗ = J⁻¹ṗ; checked against `delta_kinematics_inv` at 13 times to 1e-8.
 - `delta_symbolic.m`: `Phi_p = jacobian(Phi, p)`, `Phi_q = jacobian(Phi, q)`,
   generated as `delta_sym_Phi_p.m` / `delta_sym_Phi_q.m`; `delta_kinematics.m` forms J = −Φₚ⁻¹Φ_q from them.

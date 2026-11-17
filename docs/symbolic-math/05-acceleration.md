@@ -70,7 +70,7 @@ dynamics (part 6) need it: moving the hand's mass takes force even when the moto
 
 ## In the code
 
-- [`delta_symbolic_anim.m`](../../simulation/delta_symbolic_anim.m): `ddq_t = diff(q_t, t, 2)`; the chain rule
+- [`delta_symbolic_anim.mlx`](../../simulation/delta_symbolic_anim.mlx): `ddq_t = diff(q_t, t, 2)`; the chain rule
   produces every c-term automatically.
 - `delta_symbolic.m`: `c = jacobian(Phi_p*dp + Phi_q*dq, [p; q]) * [dp; dq]`,
   generated as `delta_sym_c.m`; agrees with finite differences to about 1e-7.
