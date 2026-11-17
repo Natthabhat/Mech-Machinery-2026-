@@ -69,10 +69,20 @@ P.m.nutM3 = 0.00040;  P.m.screwM3x10 = 0.00151 - P.m.nutM3;
 P.m.rodHousing = P.m.rodEnd - 694.8e-9*P.rhoSteel;   % weighed rod end minus its steel ball (694.8 mm^3, modelled separately)
 P.q0   = -40;            % deg, assembly guess (arms up)
 P.dir  = fileparts(mfilename('fullpath'));                        % this folder: models (.slx) are saved here
-% STEP files: first folder that has them -> Model/ subfolder, GitHub repo layout, or this folder
-cadDirs = {fullfile(P.dir, 'Model'), fullfile(P.dir, '..', 'hardware', 'mechanical', 'cad'), P.dir};
-P.cad  = cadDirs{find(cellfun(@(d) isfile(fullfile(d, 'Base V4.step')), cadDirs), 1)};
-clear cadDirs
+% STEP files: the first folder that has 'Base V4.step', searched next to this file, one level up (e.g. when run from a
+% subfolder), in the GitHub layout (simulation/ beside hardware/mechanical/cad/) and in MATLAB's current folder.
+% If none has them, MATLAB asks for the folder (desktop) or stops with a clear message.
+cadDirs = {fullfile(P.dir, 'Model'), P.dir, fullfile(P.dir, '..', 'Model'), ...
+           fullfile(P.dir, '..', 'hardware', 'mechanical', 'cad'), fullfile(pwd, 'Model'), pwd};
+cadK = find(cellfun(@(d) isfile(fullfile(d, 'Base V4.step')), cadDirs), 1);
+if isempty(cadK) && usejava('desktop')
+    cadPick = uigetdir(P.dir, 'Select the folder with the STEP files (Base V4.step, ...)');
+    if ischar(cadPick) && isfile(fullfile(cadPick, 'Base V4.step')), cadDirs = {cadPick}; cadK = 1; end
+end
+assert(~isempty(cadK), ['STEP files not found (Base V4.step, ...). Put them in a folder named "Model" next to ' ...
+    'build_delta_haptic.m, or keep the GitHub layout (simulation/ beside hardware/mechanical/cad/).']);
+P.cad  = char(java.io.File(cadDirs{cadK}).getCanonicalPath());   % full path without '..'
+clear cadDirs cadK cadPick
 assignin('base','P',P);
 
 mdl = 'delta_haptic';
