@@ -25,5 +25,6 @@ slprj/
 
 # Simulation outputs (rebuilt by the scripts)
 simulation/*.slx
+!simulation/delta_haptic.slx
 *.avi
 *.log

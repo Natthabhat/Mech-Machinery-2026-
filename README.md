@@ -233,7 +233,11 @@ current stepper drivers it can be moved round the circle by hand or driven as a 
 
 ## 4. Running the simulation
 
-MATLAB R2026a with Simulink, Simscape, Simscape Multibody and Symbolic Math Toolbox. Open MATLAB in `simulation/`:
+MATLAB R2026a with Simulink, Simscape, Simscape Multibody and Symbolic Math Toolbox.
+
+**Quickest:** download the whole repository, open [`simulation/delta_haptic.slx`](simulation/delta_haptic.slx) and press **Run**. The model finds the STEP files in `hardware/mechanical/cad/` by itself when it opens (it stores only the file names), so it works from any folder as long as the repository layout is kept. Requires R2026a or newer.
+
+Or open MATLAB in `simulation/` and use the scripts:
 
 | Command | What it does |
 |---|---|
@@ -243,15 +247,17 @@ MATLAB R2026a with Simulink, Simscape, Simscape Multibody and Symbolic Math Tool
 
 | File | Purpose |
 |---|---|
-| `build_delta_haptic.m` | model builder and parameter set `P` (geometry, weighed masses, drive, limits, colours) |
+| `delta_haptic.slx` | ready-to-run Simscape Multibody model (built by `build_delta_haptic.m`) |
+| `build_delta_haptic.m` | model builder and parameter set `P` (geometry, weighed masses, drive, limits, colours); rebuilds `delta_haptic.slx` after changes |
 | `circle_demo.m` | circle motion on the multibody model: builds the path, adds the "grab" joint and runs it; helpers (`run_grab_path`, `maxRadius`, `rodEndTilt`, `deltaFK`, `deltaIK`) are local functions at the end of the file |
 | `delta_symbolic_anim.m` | symbolic math circle animation; device parameters written at the top, numeric kinematics helpers as local functions at the end |
 
 **Model structure:** top level Environment, Leg 1–3, Hand, MotorTorque. Each leg: motor + bracket → drive (motor
 shaft, small drum, rope as a no-slip gear constraint) → upper arm (shoulder joint with rope end-stops, connector, big
 drum, 2 × 606ZZ, rope anchors) → 2 forearm rods (universal joint at the elbow, ball joint at the hand). Part colours
-match the built unit (`col.*` in `build_delta_haptic.m`). STEP files are read from `hardware/mechanical/cad/`;
-generated `.slx` files are not stored, the scripts rebuild them.
+match the built unit (`col.*` in `build_delta_haptic.m`). STEP files are read from `hardware/mechanical/cad/`
+(the model's load step puts that folder on the MATLAB path). Only `delta_haptic.slx` is stored; the circle demo
+creates its own copy when it runs.
 
 **Verified during development:** forward kinematics vs Simscape 5e-13 mm; inverse kinematics round trip 1e-15 rad;
 Jacobian, velocity and acceleration vs finite differences ≈ 1e-7; gravity compensation in Simscape 0.00 % residual;
@@ -342,7 +348,7 @@ Scripts named there but not in this repository (`delta_symbolic.m`, `delta_kinem
 
 | Path | Contents |
 |---|---|
-| `simulation/` | Simscape Multibody model, circle demo, symbolic circle animation |
+| `simulation/` | ready-to-run Simscape Multibody model (`delta_haptic.slx`), its builder, circle demo, symbolic circle animation |
 | `hardware/mechanical/cad/` | final STEP files |
 | `hardware/bom.csv` | bill of materials (template) |
 | `docs/symbolic-math/` | detailed walk-through, parts 1–8, and diagrams |
