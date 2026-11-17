@@ -14,7 +14,7 @@ t = sym('t','real');  q = sym('q',[3 1],'real');  syms x y z real;  p = [x; y; z
 B{i} = Rz*[R(i) + La*cos(q(i)); T(i); H - La*sin(q(i))];   C{i} = p + Rz*[r; 0; 0];
 ```
 
-Parameters (R, H, La, Lb, r, φ) are loaded from `delta_symbolic.mat`, the same numbers as the Simscape model.
+Parameters (R, H, La, Lb, r, φ) are written at the top of the script, the same numbers as the Simscape model.
 
 ## Step 2: equation and solve (parts 2–3)
 

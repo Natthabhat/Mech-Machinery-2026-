@@ -15,12 +15,17 @@
 %      A_i   o  shoulder pivot (fixed, on the motor bracket)
 %
 % Units: metres, radians, seconds (plots in degrees).
-% Sign convention (same as deltaIK/deltaFK): q_i > 0 = arm turned down, q_i < 0 = arm up.
+% Sign convention (same as deltaIK/deltaFK below): q_i > 0 = arm turned down, q_i < 0 = arm up.
 % World frame: z up, origin at the base centre on the base top.
 
 clear; close all
-% P = all device parameters, made by build_delta_haptic.m and saved by delta_symbolic.m
-K = load(fullfile(fileparts(mfilename('fullpath')), 'delta_symbolic.mat'), 'P'); P = K.P;
+% P = device parameters (same values as build_delta_haptic.m; m and deg)
+P = struct('phi', [180 300 60], ...                                   % leg directions around the base
+           'R',   [0.08094 0.0795402442896025 0.0788216942850955], ... % base centre -> shoulder, per leg
+           't',   [-0.000298188371861643 -3.04440158298454e-05 0.000328632387691485], ... % sideways leg offset
+           'H',   0.1241, 'La', 0.0721, 'Lb', 0.170, 'r', 0.034, 'w', 0.047, ...
+           'qMid', -43.8987259894379, 'qMin', -85.038236404337, 'qMax', -2.75921557453871, ... % rope range
+           'tiltMax', 13);                                       % rod-end tilt limit
 
 %% Symbolic variables
 t = sym('t', 'real');                 % t      : time (s)
@@ -150,4 +155,66 @@ playAnimation
 
 function h = line3(M, style)   % plot the columns of a 3xN point matrix as one 3D line
     h = plot3(M(1,:), M(2,:), M(3,:), style, 'LineWidth', 2);
+end
+
+%% ===================== local functions (numeric kinematics) =====================
+
+function R = maxRadius(P, z, margin, cxy)
+% Largest radius (m) of a horizontal circle at height z (rod-end bolt plane, m), centred at cxy, on which every
+% shoulder stays inside [qMin+margin, qMax-margin] deg and every rod end stays margin inside P.tiltMax.
+% 0 if not even the centre point is reachable.
+    th = linspace(0, 2*pi, 181);
+    ok = @(r) all(arrayfun(@(a) inRange([cxy(1)+r*cos(a); cxy(2)+r*sin(a); z], P, margin), th));
+    R = 0; if ~ok(0), return, end
+    lo = 0; hi = 0.25;
+    for it = 1:30, m = (lo+hi)/2; if ok(m), lo = m; else, hi = m; end, end
+    R = lo;
+end
+
+function y = inRange(p, P, margin)
+    q = deltaIK(p, P);
+    y = all(rodEndTilt(p, P) < P.tiltMax - margin) && all(~isnan(q)) && all(q > P.qMin + margin) && all(q < P.qMax - margin);
+end
+
+function tilt = rodEndTilt(p, P)
+% Rod-end misalignment (deg) per leg: how far each forearm leans sideways out of its leg plane.
+% The rod-end bolts run along the leg tangent v_i at both ends, so tilt_i = asin(|d_i . v_i|) with rod direction
+% d_i = (p + r u_i - E_i)/Lb and E_i . v_i = t_i:  tilt_i = asin(|p . v_i - t_i| / Lb). Depends on x, y only.
+%   p : 3xN hand positions (rod-end bolt-plane centre, m)  ->  tilt : 3xN (deg)
+    v = [-sind(P.phi); cosd(P.phi)].';               % 3x2 leg tangents
+    tilt = asind(abs(v*p(1:2,:) - P.t(:)) / P.Lb);
+end
+
+function p = deltaFK(qdeg, P)
+% Effector centre (rod-end bolt plane) from shoulder angles (q>0 = arm down). Intersects 3 spheres, returns upper solution.
+% Per leg: pivot at radius P.R(i), leg plane offset P.t(i) along the tangent, height P.H.
+    C = zeros(3,3);
+    for i = 1:3
+        c = cosd(P.phi(i)); s = sind(P.phi(i));
+        rad = P.R(i) + P.La*cosd(qdeg(i)) - P.r;           % radial distance of shifted sphere centre
+        C(:,i) = [rad*c - P.t(i)*s; rad*s + P.t(i)*c; P.H - P.La*sind(qdeg(i))];
+    end
+    % trilateration of equal-radius spheres
+    ex = (C(:,2)-C(:,1))/norm(C(:,2)-C(:,1)); a = dot(ex, C(:,3)-C(:,1));
+    ey = C(:,3)-C(:,1)-a*ex; ey = ey/norm(ey); ez = cross(ex,ey); d = norm(C(:,2)-C(:,1));
+    b = dot(ey, C(:,3)-C(:,1)); x = d/2; y = (a^2+b^2-2*a*x)/(2*b);
+    z = sqrt(P.Lb^2 - x^2 - y^2);
+    p = C(:,1) + x*ex + y*ey + z*ez; if p(3) < C(3,1), p = C(:,1) + x*ex + y*ey - z*ez; end
+end
+
+function q = deltaIK(p, P)
+% Shoulder angles (deg, q>0 = arm down) that put the effector centre (rod-end bolt plane) at p (3x1, m).
+% Per leg: elbow E(q) = [R + La*cos q, t, H - La*sin q] in the leg frame must be Lb from the hand attachment point.
+% Of the two solutions, returns the arms-up one (nearest P.qMid). NaN where p is out of reach.
+    q = nan(1,3);
+    for i = 1:3
+        c = cosd(P.phi(i)); s = sind(P.phi(i));
+        A = [c s 0; -s c 0; 0 0 1]*p + [P.r; 0; 0];        % attachment point in the leg frame
+        dx = P.R(i) - A(1); dy = P.t(i) - A(2); dz = P.H - A(3);
+        K = (P.Lb^2 - dx^2 - dy^2 - dz^2 - P.La^2)/(2*P.La); % dx*cos q - dz*sin q = K
+        rho = hypot(dx, dz); if abs(K) > rho, continue, end
+        al = atan2d(dz, dx); sol = -al + [1 -1]*acosd(K/rho);
+        sol = mod(sol - P.qMid + 180, 360) - 180 + P.qMid;   % wrap near the working range
+        [~, k] = min(abs(sol - P.qMid)); q(i) = sol(k);
+    end
 end

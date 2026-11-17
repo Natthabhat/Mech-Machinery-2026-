@@ -166,7 +166,7 @@ i's rods by
 $$\text{tilt}_i = \arcsin\frac{|p\cdot v_i - T_i|}{L_b}$$
 
 which reaches 13° at a radius of about 37 mm. Both circle motions therefore use the largest circle that keeps every
-arm inside its rope end-stops **and** every rod end below 13° (`maxRadius.m`, `rodEndTilt.m`), with a small margin.
+arm inside its rope end-stops **and** every rod end below 13° (local functions `maxRadius` and `rodEndTilt`), with a small margin.
 
 ### 3.2 Symbolic animation (`delta_symbolic_anim.m`)
 
@@ -192,7 +192,7 @@ Each arm swings once per lap; the three legs are 120° out of phase, like the th
 ### 3.3 Simscape Multibody circle (`circle_demo.m`)
 
 The full multibody model (all CAD parts, weighed masses, rope capstans, end-stops) is driven by "grabbing" the top
-of the handle: `run_grab_path.m` adds a 6-DOF joint whose x, y, z follow the path, so the motors are passive and the
+of the handle: its local function `run_grab_path` adds a 6-DOF joint whose x, y, z follow the path, so the motors are passive and the
 arms, rods and drums follow as in the real unit when you move the handle by hand. The circle has a 3° margin from
 the rope stops: **radius 28.3 mm, 3 laps, handle tracking error 0.07 mm, rod-end tilt ≤ 10°.**
 
@@ -244,10 +244,8 @@ MATLAB R2026a with Simulink, Simscape, Simscape Multibody and Symbolic Math Tool
 | File | Purpose |
 |---|---|
 | `build_delta_haptic.m` | model builder and parameter set `P` (geometry, weighed masses, drive, limits, colours) |
-| `circle_demo.m`, `run_grab_path.m` | circle demo on the Simscape model; adds the "grab" joint and drives it along the path |
-| `delta_symbolic_anim.m`, `delta_symbolic.mat` | symbolic circle animation and the parameters it loads |
-| `deltaFK.m`, `deltaIK.m` | numeric forward / inverse kinematics |
-| `maxRadius.m`, `rodEndTilt.m` | largest allowed circle at a height; rod-end tilt per leg |
+| `circle_demo.m` | circle motion on the multibody model: builds the path, adds the "grab" joint and runs it; helpers (`run_grab_path`, `maxRadius`, `rodEndTilt`, `deltaFK`, `deltaIK`) are local functions at the end of the file |
+| `delta_symbolic_anim.m` | symbolic math circle animation; device parameters written at the top, numeric kinematics helpers as local functions at the end |
 
 **Model structure:** top level Environment, Leg 1–3, Hand, MotorTorque. Each leg: motor + bracket → drive (motor
 shaft, small drum, rope as a no-slip gear constraint) → upper arm (shoulder joint with rope end-stops, connector, big
