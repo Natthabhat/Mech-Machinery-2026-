@@ -1,22 +1,16 @@
-%% delta_symbolic_anim.m - symbolic kinematics of the delta haptic device + animation (fanimator)
-% The hand follows a known path p(t). For each leg, solve() gives the shoulder angle q_i from the
-% forearm-length equation, diff() gives velocity and acceleration, fanimator/playAnimation animates it.
+%% Delta Haptic Device: Symbolic Kinematics and Circle Animation
+% The hand of the delta follows a horizontal circle $p(t)$. For each leg, |solve| gives the
+% shoulder angle $q_i$ from the forearm-length equation, |diff| gives its velocity and
+% acceleration, and |fanimator| / |playAnimation| animate the linkage.
 %
-% Picture of one leg (seen from the side, leg i):
+% *Conventions*
 %
-%        C_i  o------- hand (moves, stays level)
-%            /
-%           /  forearm, length Lb (2 parallel rods, Lb = 170 mm)
-%          /
-%    B_i  o  elbow
-%         \
-%          \  upper arm, length La, angle q_i
-%           \
-%      A_i   o  shoulder pivot (fixed, on the motor bracket)
+% * Units: metres, radians, seconds (plots in degrees).
+% * $q_i > 0$: arm turned down, $q_i < 0$: arm up (same as |deltaIK| / |deltaFK| at the end).
+% * World frame: $z$ up, origin at the base centre on the base top.
 %
-% Units: metres, radians, seconds (plots in degrees).
-% Sign convention (same as deltaIK/deltaFK below): q_i > 0 = arm turned down, q_i < 0 = arm up.
-% World frame: z up, origin at the base centre on the base top.
+% *One leg* (side view): shoulder $A_i$ (fixed) $\rightarrow$ upper arm $L_a$ at angle $q_i$
+% $\rightarrow$ elbow $B_i$ $\rightarrow$ two parallel rods $L_b$ $\rightarrow$ hand attachment $C_i$.
 
 clear; close all
 % P = device parameters (same values as build_delta_haptic.m; m and deg)
@@ -27,13 +21,23 @@ P = struct('phi', [180 300 60], ...                                   % leg dire
            'qMid', -43.8987259894379, 'qMin', -85.038236404337, 'qMax', -2.75921557453871, ... % rope range
            'tiltMax', 13);                                       % rod-end tilt limit
 
-%% Symbolic variables
+%% 1. Symbolic variables
+% Time $t$, the three shoulder angles $q_1, q_2, q_3$ and the hand position $p = (x, y, z)$,
+% the centre of the hand's rod-end bolt plane.
+
 t = sym('t', 'real');                 % t      : time (s)
 q = sym('q', [3 1], 'real');          % q1..q3 : shoulder angle of leg 1, 2, 3 (rad)
 syms x y z real                       % x y z  : hand position = centre of the hand's rod-end bolt plane (m)
 p = [x; y; z];                        % p      : hand position vector
 
-%% Parameters (from the CAD, see PROJECT_NOTES.md)
+%% 2. Parameters
+%
+% * $R_i \approx 80$ mm: base centre to shoulder pivot (per leg, from the base screw holes)
+% * $T_i < 0.5$ mm: small sideways offset along the shoulder axis
+% * $H = 124.1$ mm: shoulder height above the base top
+% * $L_a = 72.1$ mm: upper arm, $L_b = 170$ mm: forearm rods, $r = 34$ mm: hand radius
+% * $w = 47$ mm: spacing of the two parallel rods, $\varphi_i = 180^\circ, 300^\circ, 60^\circ$: leg directions
+
 R   = P.R;            % R(i)  : base centre -> shoulder pivot axis, radial distance of leg i (m, ~79-81 mm)
 T   = P.t;            % T(i)  : small sideways offset of leg i along its pivot axis (m, < 0.5 mm)
 H   = P.H;            % H     : height of the shoulder pivots above the base top (m, 124.1 mm)
@@ -43,7 +47,14 @@ r   = P.r;            % r     : hand centre -> hand rod-end bolt line (m, 34 mm)
 w   = P.w;            % w     : spacing of the 2 parallel forearm rods (m, 47 mm)
 phi = deg2rad(P.phi); % phi(i): direction of leg i around the base, 180 / 300 / 60 deg (rad)
 
-%% Points of each leg (leg frame i = world frame turned phi(i) about z; its x axis points out along the leg)
+%% 3. Points of each leg
+% Each leg is written in its own frame (turned $\varphi_i$ about $z$; $x$ out along the leg),
+% then rotated to the world frame with $R_z$:
+%
+% $$A_i = R_z \left[ R_i,\ T_i,\ H \right]^T \qquad
+%   B_i = R_z \left[ R_i + L_a\cos q_i,\ T_i,\ H - L_a\sin q_i \right]^T \qquad
+%   C_i = p + R_z \left[ r,\ 0,\ 0 \right]^T$$
+
 for i = 1:3
     Rz   = [cos(phi(i)) -sin(phi(i)) 0; sin(phi(i)) cos(phi(i)) 0; 0 0 1];   % Rz : leg frame i -> world
     v{i} = Rz*[0; 1; 0];                                       % v_i : leg tangent = shoulder axis = rod-end bolt axis
@@ -52,12 +63,23 @@ for i = 1:3
     C{i} = p + Rz*[r; 0; 0];                                   % C_i : where the forearm meets the hand (moves with p)
 end
 
-%% Equation: forearm length (loop closure)  |C_i - B_i| = Lb
+%% 4. The forearm-length equation (loop closure)
+% The two parallel rods act like one rod from $B_i$ to $C_i$, so each leg gives one equation
+% with one unknown $q_i$:
+%
+% $$\left| C_i - B_i \right|^2 = L_b^2$$
+
 for i = 1:3
     eq(i) = sum((C{i} - B{i}).^2) == Lb^2; %#ok<SAGROW>      % eq(i) : one equation per leg, unknown q_i
 end
 
-%% Hand path p(t): horizontal circle at constant height, 2 laps
+%% 5. Hand path: a horizontal circle
+% The circle is centred on the hand position with every arm at mid-travel, at constant height,
+% 2 laps of 5 s. Its radius $R_c$ is 90 % of the largest circle that keeps every arm inside the
+% rope end-stops and every rod end below 13° tilt (|maxRadius|):
+%
+% $$p(t) = \left[ x_0 + R_c\cos\frac{2\pi t}{5},\ \ y_0 + R_c\sin\frac{2\pi t}{5},\ \ z_0 \right]$$
+
 Tlap = 5;      % Tlap : time for one lap (s)
 nLap = 2;      % nLap : number of laps
 p0   = deltaFK(P.qMid*[1 1 1], P);   % p0 : centre of the circle = hand position with every arm at mid-travel
@@ -67,10 +89,19 @@ pt = [p0(1) + Rc*cos(2*pi*t/Tlap);   % pt : hand position as a function of time,
       p0(2) + Rc*sin(2*pi*t/Tlap);
       p0(3) + 0*t];                  % 0*t keeps z a function of t (same height all the way round)
 
-%% Solve eq. for q_i(x,y,z)
-% Expanding |C_i - B_i|^2 = Lb^2 gives  a*cos(q) + b*sin(q) + c = 0  (cos^2 + sin^2 = 1 removes the squares).
-% Half-angle substitution u = tan(q/2): cos q = (1-u^2)/(1+u^2), sin q = 2u/(1+u^2) turns it into the quadratic
-% (c-a)*u^2 + 2*b*u + (c+a) = 0  ->  2 solutions per leg (arm up / arm down); keep the arms-up one (as deltaIK).
+%% 6. Solve for the shoulder angles (inverse kinematics)
+% Expanding the equation ($\cos^2 + \sin^2 = 1$ removes the squares) leaves
+%
+% $$a\cos q_i + b\sin q_i + c = 0$$
+%
+% The half-angle substitution $u = \tan(q/2)$, with $\cos q = \frac{1-u^2}{1+u^2}$ and
+% $\sin q = \frac{2u}{1+u^2}$, turns it into a quadratic:
+%
+% $$(c-a)\,u^2 + 2b\,u + (c+a) = 0 \quad\Rightarrow\quad
+%   q_i = 2\arctan\frac{b \pm \sqrt{a^2+b^2-c^2}}{a-c}$$
+%
+% Two solutions (elbow out / elbow in); the elbow-out one, used by |deltaIK|, is kept.
+
 syms u cq sq                     % u = tan(q/2); cq, sq = stand-ins for cos(q_i), sin(q_i)
 qIK  = sym(zeros(3,1));          % qIK  : shoulder angles as functions of the hand position x, y, z
 qRef = deg2rad(deltaIK(p0, P)).';   % qRef : numeric answer at p0, used only to pick the right solution
@@ -86,12 +117,20 @@ for i = 1:3
 end
 vpa(qIK, 4)                      % show q1, q2, q3 (x, y, z) with 4 digits (the exact form has huge fractions)
 
-%% Change q(x,y,z) --> q(t): position, velocity, acceleration of the shoulders
+%% 7. Position, velocity and acceleration along the circle
+% Substituting $p(t)$ gives $q(t)$; |diff| applies the chain rule, which builds the Jacobian
+% $J^{-1}$ and the velocity-squared terms automatically:
+%
+% $$\dot q = \frac{dq}{dt} = J^{-1}\dot p \qquad\qquad \ddot q = \frac{d^2 q}{dt^2}$$
+
 q_t   = subs(qIK, p, pt);        % q_t   : shoulder angles q(t) (rad)
 dq_t  = diff(q_t, t);            % dq_t  : shoulder angular velocity dq/dt (rad/s)
 ddq_t = diff(q_t, t, 2);         % ddq_t : shoulder angular acceleration d2q/dt2 (rad/s^2)
 
-%% Check against the numeric inverse kinematics (deltaIK) at a few times
+%% 8. Checks
+% The symbolic $q(t)$ is compared with the numeric inverse kinematics |deltaIK| at 13 times, and the
+% whole path is checked against the rope end-stops and the 13° rod-end tilt limit.
+
 % matlabFunction turns each symbolic result into a fast numeric function of t: qf(t), dqf(t), ...
 qf = matlabFunction(q_t); dqf = matlabFunction(dq_t); ddqf = matlabFunction(ddq_t);
 pf = matlabFunction(pt);
@@ -106,7 +145,9 @@ assert(all(rodEndTilt(ps, P) < P.tiltMax, 'all'), 'path tilts a rod end past its
 fprintf('circle radius %.1f mm at height %.1f mm; q in [%.1f %.1f] deg, max rod-end tilt %.1f deg\n', ...
     1e3*Rc, 1e3*p0(3), min(qs(:)), max(qs(:)), max(rodEndTilt(ps, P), [], 'all'));
 
-%% Plot q, dq, ddq vs time (numeric values of the symbolic results: fplot on these long expressions is very slow)
+%% 9. Shoulder angle, velocity and acceleration
+% Each arm swings once per lap; the three legs are 120° out of phase.
+
 figure('Name', 'Shoulder kinematics')
 lab = {'q (deg)', 'dq/dt (deg/s)', 'd^2q/dt^2 (deg/s^2)'}; fn = {qf, dqf, ddqf};
 for k = 1:3
@@ -116,7 +157,11 @@ for k = 1:3
 end
 xlabel('t (s)')
 
-%% Change B(q) --> B(t), C(p) --> C(t), evaluated once at every animation frame (fanimator then only draws)
+%% 10. Animation
+% The elbow points $B_i(t)$ and hand points $C_i(t)$ are computed once for every frame, then
+% |fanimator| draws the upper arms (red), the rod pairs (green), the hand (blue), the circle path
+% (magenta, centre marked +) and a magenta dot on the hand centre.
+
 fps = 20;                        % fps : animation frames per second
 tf  = 0:1/fps:nLap*Tlap;         % tf  : frame times (s)
 for i = 1:3
@@ -153,11 +198,12 @@ title(sprintf('magenta: circle path (R = %.1f mm)   red: upper arms   green: rod
 
 playAnimation
 
+%% Local functions
+% Drawing helper and numeric kinematics (largest circle, rod-end tilt, forward and inverse kinematics).
+
 function h = line3(M, style)   % plot the columns of a 3xN point matrix as one 3D line
     h = plot3(M(1,:), M(2,:), M(3,:), style, 'LineWidth', 2);
 end
-
-%% ===================== local functions (numeric kinematics) =====================
 
 function R = maxRadius(P, z, margin, cxy)
 % Largest radius (m) of a horizontal circle at height z (rod-end bolt plane, m), centred at cxy, on which every
